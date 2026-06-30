@@ -1,9 +1,204 @@
-<html>
-    <head>
-        <title>Gtubn Studio's Website</title>
-    </head>
-    <body>
-        <h1>This is Gtubn Studio's Website.</h1>
-        <p>This is a simple text.</p>
-    </body>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gtubn Cloud - 文件管理</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --panel-bg: #161b22;
+            --border-color: #30363d;
+            --text-color: #c9d1d9;
+            --text-muted: #8b949e;
+            --accent-color: #58a6ff;
+            --hover-bg: #21262d;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        /* 侧边栏 */
+        .sidebar {
+            width: 240px;
+            background-color: var(--panel-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 16px;
+        }
+        .logo {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 32px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-item {
+            padding: 10px 12px;
+            border-radius: 6px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-item.active, .nav-item:hover {
+            background-color: var(--hover-bg);
+            color: var(--accent-color);
+        }
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        /* 顶栏 */
+        .topbar {
+            height: 64px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+        .search-box {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 12px;
+            width: 300px;
+        }
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            width: 100%;
+            outline: none;
+            font-size: 14px;
+        }
+        /* 文件列表区 */
+        .file-viewer {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        .breadcrumb {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+        .breadcrumb span { color: var(--text-color); font-weight: 500; }
+        .file-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+        .file-table th, .file-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .file-table th {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .file-table tbody tr:hover {
+            background-color: var(--panel-bg);
+            cursor: pointer;
+        }
+        .file-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-color);
+            text-decoration: none;
+        }
+        .file-name:hover { color: var(--accent-color); }
+        .icon { width: 18px; height: 18px; fill: currentColor; }
+    </style>
+</head>
+<body>
+
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="logo">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/></svg>
+            Gtubn Cloud
+        </div>
+        <a href="#" class="nav-item active">全部文件</a>
+        <a href="#" class="nav-item">文档</a>
+        <a href="#" class="nav-item">图片</a>
+        <a href="#" class="nav-item">视频</a>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <div class="topbar">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="搜索文件...">
+            </div>
+            <div style="font-size: 14px; color: var(--text-muted);">Gtubn Studio</div>
+        </div>
+
+        <div class="file-viewer">
+            <div class="breadcrumb">云盘根目录 / <span>我的分享</span></div>
+            
+            <table class="file-table">
+                <thead>
+                    <tr>
+                        <th>文件名</th>
+                        <th>大小</th>
+                        <th>修改日期</th>
+                    </tr>
+                </thead>
+                <tbody id="fileList">
+                    <!-- 数据行 -->
+                    <tr>
+                        <td>
+                            <a href="#" class="file-name">
+                                <svg class="icon" style="color:#e3b341" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                                示例文件夹
+                            </a>
+                        </td>
+                        <td>-</td>
+                        <td>2026-06-30</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="https://github.com" target="_blank" class="file-name">
+                                <svg class="icon" style="color:#58a6ff" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                                常用工具下载.txt
+                            </a>
+                        </td>
+                        <td>12.4 KB</td>
+                        <td>2026-06-30</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // 极简的前端搜索逻辑
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            let filter = e.target.value.toLowerCase();
+            let rows = document.querySelectorAll('#fileList tr');
+            rows.forEach(row => {
+                let text = row.querySelector('.file-name').textContent.toLowerCase();
+                row.style.display = text.includes(filter) ? '' : 'none';
+            });
+        });
+    </script>
+</body>
 </html>
