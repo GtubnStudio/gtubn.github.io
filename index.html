@@ -3,201 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gtubn Cloud - 文件管理</title>
+    <title>Gtubn Studio 的网站</title>
     <style>
         :root {
-            --bg-color: #0d1117;
-            --panel-bg: #161b22;
-            --border-color: #30363d;
-            --text-color: #c9d1d9;
-            --text-muted: #8b949e;
-            --accent-color: #58a6ff;
-            --hover-bg: #21262d;
+            --bg: #0d1117; --panel: #161b22; --border: #21262d;
+            --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+        }
+        [data-theme="light"] {
+            --bg: #f6f8fa; --panel: #ffffff; --border: #d0d7de;
+            --text: #24292f; --muted: #57606a; --accent: #0969da;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
+            font-family: -apple-system, sans-serif;
+            background: var(--bg); color: var(--text);
+            max-width: 800px; margin: 0 auto; padding: 40px 20px;
+            transition: background 0.2s;
         }
-        /* 侧边栏 */
-        .sidebar {
-            width: 240px;
-            background-color: var(--panel-bg);
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            padding: 24px 16px;
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        h1 { font-size: 20px; font-weight: 600; }
+        .nav { display: flex; gap: 16px; margin-bottom: 36px; font-size: 14px; }
+        .nav a { color: var(--muted); text-decoration: none; cursor: pointer; }
+        .nav a.active { color: var(--accent); font-weight: 500; }
+        
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* Share */
+        .empty-state { display: flex; flex-direction: column; align-items: center; padding: 60px 0; }
+        .anim-box { position: relative; width: 80px; height: 80px; margin-bottom: 20px; }
+        .pulse {
+            position: absolute; width: 100%; height: 100%;
+            border: 2px solid var(--accent); border-radius: 50%;
+            animation: wave 2.5s infinite ease-out; opacity: 0;
         }
-        .logo {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 32px;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .pulse2 { animation-delay: 1.25s; }
+        .center-icon {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 40px; height: 40px; color: var(--muted); animation: float 4s infinite ease-in-out;
         }
-        .nav-item {
-            padding: 10px 12px;
-            border-radius: 6px;
-            color: var(--text-color);
-            text-decoration: none;
-            font-size: 14px;
-            margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .empty-state p { font-size: 14px; color: var(--muted); }
+        
+        /* 关于 */
+        .about-content { line-height: 1.8; font-size: 14px; }
+        .about-content p { margin-bottom: 12px; }
+        .about-content span { color: var(--muted); display: inline-block; width: 80px; }
+
+        button {
+            background: var(--panel); border: 1px solid var(--border);
+            padding: 6px 12px; border-radius: 6px; color: var(--text); cursor: pointer; font-size: 13px;
         }
-        .nav-item.active, .nav-item:hover {
-            background-color: var(--hover-bg);
-            color: var(--accent-color);
+        @keyframes wave {
+            0% { transform: scale(0.4); opacity: 0; }
+            30% { opacity: 0.3; }
+            100% { transform: scale(1.3); opacity: 0; }
         }
-        /* 主内容区 */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+        @keyframes float {
+            0%, 100% { transform: translate(-50%, -52%); }
+            50% { transform: translate(-50%, -48%); }
         }
-        /* 顶栏 */
-        .topbar {
-            height: 64px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 24px;
-        }
-        .search-box {
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 6px 12px;
-            width: 300px;
-        }
-        .search-box input {
-            background: transparent;
-            border: none;
-            color: var(--text-color);
-            width: 100%;
-            outline: none;
-            font-size: 14px;
-        }
-        /* 文件列表区 */
-        .file-viewer {
-            flex: 1;
-            padding: 24px;
-            overflow-y: auto;
-        }
-        .breadcrumb {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-bottom: 16px;
-        }
-        .breadcrumb span { color: var(--text-color); font-weight: 500; }
-        .file-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 14px;
-        }
-        .file-table th, .file-table td {
-            padding: 12px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .file-table th {
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-        .file-table tbody tr:hover {
-            background-color: var(--panel-bg);
-            cursor: pointer;
-        }
-        .file-name {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--text-color);
-            text-decoration: none;
-        }
-        .file-name:hover { color: var(--accent-color); }
-        .icon { width: 18px; height: 18px; fill: currentColor; }
     </style>
 </head>
 <body>
 
-    <!-- 侧边栏 -->
-    <div class="sidebar">
-        <div class="logo">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/></svg>
-            Gtubn Cloud
-        </div>
-        <a href="#" class="nav-item active">全部文件</a>
-        <a href="#" class="nav-item">文档</a>
-        <a href="#" class="nav-item">图片</a>
-        <a href="#" class="nav-item">视频</a>
+    <header>
+        <h1>Gtubn Studio 的网站</h1>
+        <button id="tog">Light Mode</button>
+    </header>
+
+    <div class="nav">
+        <a id="nav-share" class="active">Share</a>
+        <a id="nav-about">关于</a>
     </div>
 
-    <!-- 主内容区 -->
-    <div class="main-content">
-        <div class="topbar">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="搜索文件...">
+    <!-- Share 页 -->
+    <div id="page-share" class="page active">
+        <div class="empty-state">
+            <div class="anim-box">
+                <div class="pulse"></div>
+                <div class="pulse2"></div>
+                <svg class="center-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
             </div>
-            <div style="font-size: 14px; color: var(--text-muted);">Gtubn Studio</div>
+            <p>暂无共享文件</p>
         </div>
+    </div>
 
-        <div class="file-viewer">
-            <div class="breadcrumb">云盘根目录 / <span>我的分享</span></div>
-            
-            <table class="file-table">
-                <thead>
-                    <tr>
-                        <th>文件名</th>
-                        <th>大小</th>
-                        <th>修改日期</th>
-                    </tr>
-                </thead>
-                <tbody id="fileList">
-                    <!-- 数据行 -->
-                    <tr>
-                        <td>
-                            <a href="#" class="file-name">
-                                <svg class="icon" style="color:#e3b341" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
-                                示例文件夹
-                            </a>
-                        </td>
-                        <td>-</td>
-                        <td>2026-06-30</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a href="https://github.com" target="_blank" class="file-name">
-                                <svg class="icon" style="color:#58a6ff" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                                常用工具下载.txt
-                            </a>
-                        </td>
-                        <td>12.4 KB</td>
-                        <td>2026-06-30</td>
-                    </tr>
-                </tbody>
-            </table>
+    <!-- 关于 页 -->
+    <div id="page-about" class="page">
+        <div class="about-content">
+            <p><strong>Gtubn Studio</strong> 是一个专注于数字化效率与极简技术实现的组织。</p>
+            <p><span>支持</span>GitHub Pages</p>
         </div>
     </div>
 
     <script>
-        // 极简的前端搜索逻辑
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            let filter = e.target.value.toLowerCase();
-            let rows = document.querySelectorAll('#fileList tr');
-            rows.forEach(row => {
-                let text = row.querySelector('.file-name').textContent.toLowerCase();
-                row.style.display = text.includes(filter) ? '' : 'none';
-            });
+        const btnShare = document.getElementById('nav-share');
+        const btnAbout = document.getElementById('nav-about');
+        const pgShare = document.getElementById('page-share');
+        const pgAbout = document.getElementById('page-about');
+
+        btnShare.addEventListener('click', () => {
+            btnShare.className = 'active'; btnAbout.className = '';
+            pgShare.className = 'page active'; pgAbout.className = 'page';
+        });
+        btnAbout.addEventListener('click', () => {
+            btnAbout.className = 'active'; btnShare.className = '';
+            pgAbout.className = 'page active'; pgShare.className = 'page';
+        });
+
+        document.getElementById('tog').addEventListener('click', e => {
+            let l = document.body.getAttribute('data-theme') === 'light';
+            if (l) { document.body.removeAttribute('data-theme'); e.target.textContent = 'Light Mode'; }
+            else { document.body.setAttribute('data-theme', 'light'); e.target.textContent = 'Dark Mode'; }
         });
     </script>
 </body>
