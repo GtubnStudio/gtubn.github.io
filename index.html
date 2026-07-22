@@ -2,60 +2,236 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Gtubn Studio 的网站</title>
     <!-- Web Logo / Favicon -->
     <link rel="icon" href="logo1.jpeg" type="image/jpeg">
     <style>
         :root {
-            --bg: #0d1117; --panel: #161b22; --border: #21262d;
+            --bg: #0d1117; --panel: rgba(22, 27, 34, 0.75); --border: rgba(255, 255, 255, 0.12);
             --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
+            --accent-glow: rgba(88, 166, 255, 0.35);
+            --particle: rgba(88, 166, 255, 0.3);
+            --mouse-glow: rgba(88, 166, 255, 0.12);
+            --notice-bg: rgba(88, 166, 255, 0.08);
+            --notice-border: rgba(88, 166, 255, 0.25);
         }
-        [data-theme="light"] {
-            --bg: #f6f8fa; --panel: #ffffff; --border: #d0d7de;
-            --text: #24292f; --muted: #57606a; --accent: #0969da;
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg: #f6f8fa; --panel: rgba(255, 255, 255, 0.8); --border: rgba(0, 0, 0, 0.08);
+                --text: #24292f; --muted: #57606a; --accent: #0969da;
+                --accent-glow: rgba(9, 105, 218, 0.25);
+                --particle: rgba(9, 105, 218, 0.25);
+                --mouse-glow: rgba(9, 105, 218, 0.08);
+                --notice-bg: rgba(9, 105, 218, 0.06);
+                --notice-border: rgba(9, 105, 218, 0.2);
+            }
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: -apple-system, sans-serif;
-            background: var(--bg); color: var(--text);
-            max-width: 800px; margin: 0 auto; padding: 40px 20px;
-            transition: background 0.2s;
-        }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        h1 { font-size: 20px; font-weight: 600; }
-        .nav { display: flex; gap: 16px; margin-bottom: 36px; font-size: 14px; }
-        .nav a { color: var(--muted); text-decoration: none; cursor: pointer; }
-        .nav a.active { color: var(--accent); font-weight: 500; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
-        .page { display: none; }
-        .page.active { display: block; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg); color: var(--text);
+            max-width: 800px; margin: 0 auto; padding: 30px 20px;
+            transition: background 0.4s ease, color 0.4s ease;
+            position: relative; overflow-x: hidden; min-height: 100vh;
+            touch-action: manipulation;
+        }
+
+        /* 动态背景 Canvas */
+        #bg-canvas {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1; pointer-events: none;
+        }
+
+        /* Header */
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        h1 { 
+            font-size: 21px; font-weight: 700; cursor: pointer;
+            background: linear-gradient(135deg, var(--text) 0%, var(--accent) 60%, #bc8cff 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: shine 5s linear infinite;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @media (hover: hover) {
+            h1:hover { transform: scale(1.02); }
+        }
+
+        /* 导航栏 */
+        .nav { display: flex; gap: 16px; margin-bottom: 30px; font-size: 14px; position: relative; }
+        .nav a { 
+            color: var(--muted); text-decoration: none; cursor: pointer; 
+            padding: 8px 18px; border-radius: 20px;
+            position: relative; transition: all 0.25s ease;
+            user-select: none;
+        }
+        .nav a.active { 
+            color: var(--accent); font-weight: 600;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            box-shadow: 0 0 16px var(--accent-glow);
+        }
+
+        /* 页面卡片 极其平滑的淡入效果 */
+        .page { display: none; opacity: 0; transform: translateY(10px); }
+        .page.active { 
+            display: block; 
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+        }
+
+        /* 优化后的卡片，消除了复杂的 3D 旋转与倾斜，仅保留微弱平滑的微上浮 */
+        .card-box {
+            background: var(--panel);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border); border-radius: 16px;
+            padding: 32px 28px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            will-change: transform;
+        }
+        @media (hover: hover) {
+            .card-box:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+            }
+        }
 
         /* 主页 */
-        .home-content { padding: 20px 0; }
-        .home-content h2 { font-size: 22px; font-weight: 600; margin-bottom: 12px; }
-        .home-content p { font-size: 15px; color: var(--muted); line-height: 1.6; }
-
-        /* 关于 */
-        .about-content { line-height: 1.8; font-size: 14px; }
-        .about-content p { margin-bottom: 12px; }
-        .about-content span { color: var(--muted); display: inline-block; width: 80px; }
-        .about-img {
-            margin-top: 20px; max-width: 100%; height: auto;
-            border-radius: 8px; border: 1px solid var(--border);
+        .home-content h2 { 
+            font-size: 22px; font-weight: 600; margin-bottom: 12px;
+            color: var(--text);
+        }
+        .home-content p { 
+            font-size: 15px; color: var(--muted); line-height: 1.7;
         }
 
-        button {
-            background: var(--panel); border: 1px solid var(--border);
-            padding: 6px 12px; border-radius: 6px; color: var(--text); cursor: pointer; font-size: 13px;
+        /* 公告栏样式 */
+        .notice-box {
+            margin-top: 20px;
+            padding: 16px 20px;
+            background: var(--notice-bg);
+            border: 1px solid var(--notice-border);
+            border-radius: 12px;
+        }
+        .notice-header {
+            display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+            font-size: 13px; font-weight: 600; color: var(--accent);
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        /* 呼吸红点标识 */
+        .notice-dot {
+            width: 8px; height: 8px; background-color: #ff4d4f; border-radius: 50%;
+            box-shadow: 0 0 0 rgba(255, 77, 79, 0.4);
+            animation: pulse 2s infinite;
+        }
+        .notice-body {
+            font-size: 14px; color: var(--text); line-height: 1.6;
+        }
+
+        /* 关于页 */
+        .about-content { line-height: 1.8; font-size: 14px; }
+        .about-content p { margin-bottom: 12px; }
+        .about-content span { color: var(--muted); display: inline-block; width: 85px; }
+        
+        /* 社交链接区域 */
+        .social-section {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px dashed var(--border);
+        }
+        .social-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .social-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            color: var(--text);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        @media (hover: hover) {
+            .social-btn:hover {
+                background: var(--notice-bg);
+                border-color: var(--accent);
+                color: var(--accent);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px var(--accent-glow);
+            }
+        }
+        .social-btn:active {
+            transform: scale(0.97);
+        }
+        .social-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-style: dashed;
+        }
+        .social-btn.disabled:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: var(--border);
+            color: var(--text);
+            transform: none;
+            box-shadow: none;
+        }
+        .social-tag {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: var(--border);
+            color: var(--muted);
+        }
+
+        .about-img {
+            margin-top: 22px; max-width: 100%; height: auto;
+            border-radius: 10px; border: 1px solid var(--border);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        @media (hover: hover) {
+            .about-img:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 16px var(--accent-glow);
+            }
+        }
+
+        /* Keyframes */
+        @keyframes shine { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.6); }
+            70% { box-shadow: 0 0 0 8px rgba(255, 77, 79, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 77, 79, 0); }
         }
     </style>
 </head>
 <body>
 
+    <!-- 动态 Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
     <header>
         <h1>Gtubn Studio 的网站</h1>
-        <button id="tog">Light Mode</button>
     </header>
 
     <div class="nav">
@@ -65,43 +241,158 @@
 
     <!-- 主页 -->
     <div id="page-home" class="page active">
-        <div class="home-content">
+        <div class="card-box home-content">
             <h2>欢迎来到 Gtubn Studio 的网站！</h2>
             <p>海内存知己，天涯若比邻。</p>
+
+            <!-- 主页公告栏 -->
+            <div class="notice-box">
+                <div class="notice-header">
+                    <span class="notice-dot"></span>
+                    <span>最新公告</span>
+                </div>
+                <div class="notice-body">
+                    此为实验性网站，可能存在不稳定等情况，将来将会修复。
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- 关于 页 -->
     <div id="page-about" class="page">
-        <div class="about-content">
+        <div class="card-box about-content">
             <p>这是 Gtubn Studio 的网站。</p>
             <p>(c) 2026 Gtubn Studio, All Rights Reserved.</p>
             <p>我们的内容遵循 &lt;/&gt; 开源精神。</p>
             <p><span>Web 呈现</span>GitHub Pages</p>
+
+            <!-- 社交平台链接 -->
+            <div class="social-section">
+                <div class="social-title">关注我们</div>
+                <div class="social-links">
+                    <a href="https://www.douyin.com/user/MS4wLjABAAAA6nr-DmGgVuEr7MlgEWJX9GgkaFzZDaOBe3FCrgVJ4xZhi5Th--6S2MfE2Wzd7oUe" target="_blank" rel="noopener" class="social-btn">
+                        抖音
+                    </a>
+                    <a href="https://space.bilibili.com/3546678657289013" target="_blank" rel="noopener" class="social-btn">
+                        哔哩哔哩
+                    </a>
+                    <span class="social-btn disabled">
+                        YouTube <span class="social-tag">即将推出</span>
+                    </span>
+                </div>
+            </div>
+
             <img src="logo2.jpeg" alt="Gtubn Studio Logo" class="about-img">
         </div>
     </div>
 
     <script>
+        // 1. 页面切换控制
         const btnHome = document.getElementById('nav-home');
         const btnAbout = document.getElementById('nav-about');
         const pgHome = document.getElementById('page-home');
         const pgAbout = document.getElementById('page-about');
 
         btnHome.addEventListener('click', () => {
+            if (btnHome.classList.contains('active')) return;
             btnHome.className = 'active'; btnAbout.className = '';
             pgHome.className = 'page active'; pgAbout.className = 'page';
         });
         btnAbout.addEventListener('click', () => {
+            if (btnAbout.classList.contains('active')) return;
             btnAbout.className = 'active'; btnHome.className = '';
             pgAbout.className = 'page active'; pgHome.className = 'page';
         });
 
-        document.getElementById('tog').addEventListener('click', e => {
-            let l = document.body.getAttribute('data-theme') === 'light';
-            if (l) { document.body.removeAttribute('data-theme'); e.target.textContent = 'Light Mode'; }
-            else { document.body.setAttribute('data-theme', 'light'); e.target.textContent = 'Dark Mode'; }
-        });
+        // 2. 触摸与鼠标全兼容粒子 Canvas 交互（保持背景柔和连线）
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [];
+        let pointer = { x: -1000, y: -1000, isTouch: false };
+
+        function initCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            particles = Array.from({ length: Math.min(Math.floor(width / 20), 40) }, () => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                size: Math.random() * 2 + 1
+            }));
+        }
+
+        const updatePointer = (e) => {
+            if (e.touches && e.touches.length > 0) {
+                pointer.x = e.touches[0].clientX;
+                pointer.y = e.touches[0].clientY;
+                pointer.isTouch = true;
+            } else {
+                pointer.x = e.clientX;
+                pointer.y = e.clientY;
+                pointer.isTouch = false;
+            }
+        };
+
+        window.addEventListener('mousemove', updatePointer, { passive: true });
+        window.addEventListener('touchstart', updatePointer, { passive: true });
+        window.addEventListener('touchmove', updatePointer, { passive: true });
+        window.addEventListener('touchend', () => { pointer.x = -1000; pointer.y = -1000; }, { passive: true });
+
+        function drawCanvas() {
+            ctx.clearRect(0, 0, width, height);
+            const style = getComputedStyle(document.body);
+            const pColor = style.getPropertyValue('--particle').trim();
+            const mouseGlow = style.getPropertyValue('--mouse-glow').trim();
+
+            if (pointer.x > 0) {
+                const glowRadius = pointer.isTouch ? 160 : 200;
+                const gradient = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, glowRadius);
+                gradient.addColorStop(0, mouseGlow);
+                gradient.addColorStop(1, 'transparent');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, width, height);
+            }
+
+            ctx.fillStyle = pColor;
+            ctx.strokeStyle = pColor;
+
+            particles.forEach((p, i) => {
+                const dx = p.x - pointer.x;
+                const dy = p.y - pointer.y;
+                const dist = Math.hypot(dx, dy);
+                if (dist < 100) {
+                    const angle = Math.atan2(dy, dx);
+                    p.x += Math.cos(angle) * 1.2;
+                    p.y += Math.sin(angle) * 1.2;
+                }
+
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0 || p.x > width) p.vx *= -1;
+                if (p.y < 0 || p.y > height) p.vy *= -1;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                for (let j = i + 1; j < particles.length; j++) {
+                    const p2 = particles[j];
+                    const d = Math.hypot(p.x - p2.x, p.y - p2.y);
+                    if (d < 100) {
+                        ctx.beginPath();
+                        ctx.lineWidth = (1 - d / 100) * 0.6;
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(drawCanvas);
+        }
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+        drawCanvas();
     </script>
 </body>
 </html>
