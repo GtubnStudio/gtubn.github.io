@@ -23,6 +23,9 @@
             --card-inner-border: rgba(255, 255, 255, 0.05);
             --badge-bg: rgba(88, 166, 255, 0.15);
             --badge-text: #79c0ff;
+            --nav-bg: rgba(255, 255, 255, 0.04);
+            --nav-hover-bg: rgba(255, 255, 255, 0.06);
+            --nav-active-bg: rgba(255, 255, 255, 0.1);
         }
 
         @media (prefers-color-scheme: light) {
@@ -44,6 +47,9 @@
                 --card-inner-border: rgba(0, 0, 0, 0.04);
                 --badge-bg: rgba(9, 105, 218, 0.1);
                 --badge-text: #0969da;
+                --nav-bg: rgba(0, 0, 0, 0.04);
+                --nav-hover-bg: rgba(0, 0, 0, 0.05);
+                --nav-active-bg: #ffffff;
             }
         }
 
@@ -52,7 +58,7 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background: var(--bg); color: var(--text);
-            max-width: 840px; margin: 0 auto; padding: 40px 20px;
+            max-width: 840px; margin: 0 auto; padding: 32px 20px;
             transition: background 0.4s ease, color 0.4s ease;
             position: relative; overflow-x: hidden; min-height: 100vh;
             touch-action: manipulation;
@@ -62,41 +68,103 @@
         #bg-canvas {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -1; pointer-events: none;
+            opacity: 0;
+            animation: bgFadeIn 1s ease forwards;
         }
 
-        /* Header */
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+        /* 页面加载动画 (Page Entry Animations) */
+        header.site-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 24px;
+            padding: 12px 20px;
+            background: var(--panel);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            gap: 16px;
+            opacity: 0;
+            animation: slideDownIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+        }
+
         h1 { 
-            font-size: 22px; font-weight: 700; cursor: pointer; letter-spacing: -0.3px;
-            background: linear-gradient(135deg, var(--text) 20%, var(--accent) 70%, #bc8cff 100%);
-            background-size: 200% auto;
+            font-size: 20px; font-weight: 700; cursor: pointer; letter-spacing: -0.3px;
+            background: linear-gradient(135deg, var(--accent) 30%, var(--text) 80%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: shine 6s linear infinite;
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            white-space: nowrap;
         }
         @media (hover: hover) { h1:hover { transform: scale(1.02); } }
 
-        /* 导航栏 */
-        .nav { display: flex; gap: 8px; margin-bottom: 28px; position: relative; flex-wrap: wrap; }
-        .nav a { 
-            color: var(--muted); text-decoration: none; cursor: pointer; 
-            padding: 8px 18px; border-radius: 12px; font-size: 14px; font-weight: 500;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-            user-select: none; border: 1px solid transparent;
+        /* 导航栏胶囊组件 */
+        .nav { 
+            display: flex; 
+            gap: 4px; 
+            background: var(--nav-bg);
+            padding: 4px;
+            border-radius: 12px;
+            border: 1px solid var(--card-inner-border);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
-        .nav a:hover { color: var(--text); }
+        .nav a { 
+            color: var(--muted); 
+            text-decoration: none; 
+            cursor: pointer; 
+            padding: 7px 16px; 
+            border-radius: 8px; 
+            font-size: 13.5px; 
+            font-weight: 500;
+            line-height: 1.2;
+            transition: color 0.2s ease, background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+            user-select: none;
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center;
+            position: relative;
+        }
+        @media (hover: hover) {
+            .nav a:not(.active):hover { 
+                color: var(--text); 
+                background: var(--nav-hover-bg);
+            }
+        }
+        .nav a:active {
+            transform: scale(0.96);
+        }
         .nav a.active { 
-            color: var(--accent); font-weight: 600;
-            background: var(--panel);
-            border-color: var(--border-glow);
-            box-shadow: 0 4px 20px var(--accent-glow);
+            color: var(--accent); 
+            font-weight: 600;
+            background: var(--nav-active-bg);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), 0 0 0 1px var(--card-inner-border);
+        }
+
+        /* 移动端/窄屏自适应 Header */
+        @media (max-width: 640px) {
+            header.site-header {
+                flex-direction: column;
+                align-items: center;
+                padding: 16px;
+                gap: 12px;
+            }
+            .nav {
+                width: 100%;
+                justify-content: space-around;
+            }
+            .nav a {
+                flex: 1;
+                text-align: center;
+                padding: 9px 0;
+            }
         }
 
         /* 页面卡片 */
-        .page { display: none; opacity: 0; transform: translateY(12px); }
+        .page { display: none; opacity: 0; transform: translateY(16px); }
         .page.active { 
             display: block; 
-            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+            animation: slideUpIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards; 
         }
 
         .card-box {
@@ -107,6 +175,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
         }
 
+        .env-cards-container,
         .about-cards-container {
             display: flex;
             flex-direction: column;
@@ -131,11 +200,10 @@
             width: 8px; height: 8px; background-color: #ff4d4f; border-radius: 50%;
             animation: pulse 2s infinite;
         }
-        .notice-body { font-size: 14px; color: var(--text); line-height: 1.6; }
+        .notice-body { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
 
         /* 网格布局与诊断卡片 */
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin: 24px 0 12px 0; }
-        .section-header:first-child { margin-top: 0; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .section-title {
             font-size: 13px; font-weight: 700; color: var(--accent);
             letter-spacing: 0.5px;
@@ -174,7 +242,7 @@
         .badge.offline { background: rgba(248, 81, 73, 0.15); color: #f85149; }
 
         .ua-box {
-            margin-top: 10px; padding: 14px;
+            padding: 14px;
             background: var(--card-inner); border: 1px solid var(--card-inner-border);
             border-radius: 12px; font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
             font-size: 12px; color: var(--muted); line-height: 1.6;
@@ -298,8 +366,19 @@
             line-height: 1.6;
         }
 
-        @keyframes shine { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+        /* 关键帧定义 */
+        @keyframes slideDownIn {
+            from { opacity: 0; transform: translateY(-16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideUpIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bgFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.6); }
             70% { box-shadow: 0 0 0 8px rgba(255, 77, 79, 0); }
@@ -311,16 +390,15 @@
 
     <canvas id="bg-canvas"></canvas>
 
-    <header>
+    <header class="site-header">
         <h1>Gtubn Studio 的网站</h1>
+        <nav class="nav">
+            <a id="nav-home" class="active">主页</a>
+            <a id="nav-env">环境检测</a>
+            <a id="nav-files">文件</a>
+            <a id="nav-about">关于</a>
+        </nav>
     </header>
-
-    <nav class="nav">
-        <a id="nav-home" class="active">主页</a>
-        <a id="nav-env">环境检测</a>
-        <a id="nav-files">文件</a>
-        <a id="nav-about">关于</a>
-    </nav>
 
     <!-- 1. 主页 -->
     <main id="page-home" class="page active">
@@ -334,7 +412,7 @@
                     <span>最新公告</span>
                 </div>
                 <div class="notice-body">
-                    此为实验性网站，可能存在不稳定等情况，将来将会修复。
+                    欢迎访问！本站点正在测试部署中，部分功能与界面将持续优化。
                 </div>
             </div>
         </div>
@@ -342,65 +420,79 @@
 
     <!-- 2. 环境检测页 -->
     <main id="page-env" class="page">
-        <div class="card-box">
-            <div class="section-header">
-                <div class="section-title">基础与环境</div>
-                <button class="action-btn" id="copy-btn">复制检测诊断</button>
-            </div>
-            <div class="info-grid">
-                <div class="info-card"><div class="label">浏览器核心</div><div class="value" id="env-browser">检测中...</div></div>
-                <div class="info-card"><div class="label">操作系统</div><div class="value" id="env-os">检测中...</div></div>
-                <div class="info-card"><div class="label">首选语言</div><div class="value" id="env-lang">检测中...</div></div>
-                <div class="info-card"><div class="label">网络连接</div><div class="value" id="env-online">检测中...</div></div>
-                <div class="info-card"><div class="label">配色主题</div><div class="value" id="env-theme">检测中...</div></div>
-                <div class="info-card"><div class="label">系统时区</div><div class="value" id="env-timezone">检测中...</div></div>
-            </div>
-
-            <div class="section-header">
-                <div class="section-title">屏幕与图形显示</div>
-            </div>
-            <div class="info-grid">
-                <div class="info-card"><div class="label">屏幕像素分辨率</div><div class="value" id="env-screen">检测中...</div></div>
-                <div class="info-card"><div class="label">当前窗口视口</div><div class="value" id="env-viewport">检测中...</div></div>
-                <div class="info-card"><div class="label">缩放比 (DPR)</div><div class="value" id="env-dpr">检测中...</div></div>
-                <div class="info-card"><div class="label">色深与刷新频率</div><div class="value" id="env-colordepth">检测中...</div></div>
+        <div class="env-cards-container">
+            <!-- 基础与环境 -->
+            <div class="card-box">
+                <div class="section-header">
+                    <div class="section-title">基础与环境</div>
+                    <button class="action-btn" id="copy-btn">复制检测诊断</button>
+                </div>
+                <div class="info-grid">
+                    <div class="info-card"><div class="label">浏览器核心</div><div class="value" id="env-browser">检测中...</div></div>
+                    <div class="info-card"><div class="label">操作系统</div><div class="value" id="env-os">检测中...</div></div>
+                    <div class="info-card"><div class="label">首选语言</div><div class="value" id="env-lang">检测中...</div></div>
+                    <div class="info-card"><div class="label">网络连接</div><div class="value" id="env-online">检测中...</div></div>
+                    <div class="info-card"><div class="label">配色主题</div><div class="value" id="env-theme">检测中...</div></div>
+                    <div class="info-card"><div class="label">系统时区</div><div class="value" id="env-timezone">检测中...</div></div>
+                </div>
             </div>
 
-            <div class="section-header">
-                <div class="section-title">硬件、算力与渲染</div>
-            </div>
-            <div class="info-grid">
-                <div class="info-card"><div class="label">CPU 逻辑核心</div><div class="value" id="env-cpu">检测中...</div></div>
-                <div class="info-card"><div class="label">运行内存估计</div><div class="value" id="env-memory">检测中...</div></div>
-                <div class="info-card"><div class="label">GPU 渲染器信息</div><div class="value" id="env-gpu">检测中...</div></div>
-                <div class="info-card"><div class="label">WebGL 2.0 支持</div><div class="value" id="env-webgl2">检测中...</div></div>
-                <div class="info-card"><div class="label">WebAssembly (WASM)</div><div class="value" id="env-wasm">检测中...</div></div>
-                <div class="info-card"><div class="label">电池与电量</div><div class="value" id="env-battery">检测中...</div></div>
-            </div>
-
-            <div class="section-header">
-                <div class="section-title">网络能力与性能诊断</div>
-            </div>
-            <div class="info-grid">
-                <div class="info-card"><div class="label">协议 / 端口</div><div class="value" id="env-proto">检测中...</div></div>
-                <div class="info-card"><div class="label">估计带宽 & 延迟</div><div class="value" id="env-network-speed">检测中...</div></div>
-                <div class="info-card"><div class="label">页面首次渲染耗时</div><div class="value" id="env-performance">检测中...</div></div>
-                <div class="info-card"><div class="label">WebRTC 支持</div><div class="value" id="env-webrtc">检测中...</div></div>
-                <div class="info-card"><div class="label">剪贴板权限 (Clipboard)</div><div class="value" id="env-clipboard">检测中...</div></div>
-                <div class="info-card"><div class="label">Local Storage</div><div class="value" id="env-storage">检测中...</div></div>
+            <!-- 屏幕与图形显示 -->
+            <div class="card-box">
+                <div class="section-header">
+                    <div class="section-title">屏幕与图形显示</div>
+                </div>
+                <div class="info-grid">
+                    <div class="info-card"><div class="label">屏幕像素分辨率</div><div class="value" id="env-screen">检测中...</div></div>
+                    <div class="info-card"><div class="label">当前窗口视口</div><div class="value" id="env-viewport">检测中...</div></div>
+                    <div class="info-card"><div class="label">缩放比 (DPR)</div><div class="value" id="env-dpr">检测中...</div></div>
+                    <div class="info-card"><div class="label">色深与刷新频率</div><div class="value" id="env-colordepth">检测中...</div></div>
+                </div>
             </div>
 
-            <div class="section-header">
-                <div class="section-title">User-Agent 标识</div>
+            <!-- 硬件、算力与渲染 -->
+            <div class="card-box">
+                <div class="section-header">
+                    <div class="section-title">硬件、算力与渲染</div>
+                </div>
+                <div class="info-grid">
+                    <div class="info-card"><div class="label">CPU 逻辑核心</div><div class="value" id="env-cpu">检测中...</div></div>
+                    <div class="info-card"><div class="label">运行内存估计</div><div class="value" id="env-memory">检测中...</div></div>
+                    <div class="info-card"><div class="label">GPU 渲染器信息</div><div class="value" id="env-gpu">检测中...</div></div>
+                    <div class="info-card"><div class="label">WebGL 2.0 支持</div><div class="value" id="env-webgl2">检测中...</div></div>
+                    <div class="info-card"><div class="label">WebAssembly (WASM)</div><div class="value" id="env-wasm">检测中...</div></div>
+                    <div class="info-card"><div class="label">电池与电量</div><div class="value" id="env-battery">检测中...</div></div>
+                </div>
             </div>
-            <div class="ua-box" id="env-ua">检测中...</div>
+
+            <!-- 网络能力与性能诊断 -->
+            <div class="card-box">
+                <div class="section-header">
+                    <div class="section-title">网络能力与性能诊断</div>
+                </div>
+                <div class="info-grid">
+                    <div class="info-card"><div class="label">协议 / 端口</div><div class="value" id="env-proto">检测中...</div></div>
+                    <div class="info-card"><div class="label">估计带宽 & 延迟</div><div class="value" id="env-network-speed">检测中...</div></div>
+                    <div class="info-card"><div class="label">页面首次渲染耗时</div><div class="value" id="env-performance">检测中...</div></div>
+                    <div class="info-card"><div class="label">WebRTC 支持</div><div class="value" id="env-webrtc">检测中...</div></div>
+                    <div class="info-card"><div class="label">剪贴板权限 (Clipboard)</div><div class="value" id="env-clipboard">检测中...</div></div>
+                    <div class="info-card"><div class="label">Local Storage</div><div class="value" id="env-storage">检测中...</div></div>
+                </div>
+            </div>
+
+            <!-- User-Agent 标识 -->
+            <div class="card-box">
+                <div class="section-header">
+                    <div class="section-title">User-Agent 标识</div>
+                </div>
+                <div class="ua-box" id="env-ua">检测中...</div>
+            </div>
         </div>
     </main>
 
     <!-- 3. 文件导览页 -->
     <main id="page-files" class="page">
         <div class="card-box">
-            <!-- 详细的文件声明区域 -->
             <div class="file-notice">
                 <div class="file-notice-title">文件服务与使用声明</div>
                 本页面列出的所有资源均由 GitHub API 动态实时同步展示：
@@ -427,9 +519,11 @@
     <main id="page-about" class="page">
         <div class="about-cards-container">
             <div class="card-box about-content">
-                <p>这是 Gtubn Studio 的网站。</p>
-                <p>&copy; 2026 Gtubn Studio, All Rights Reserved.</p>
-                <p>我们的内容遵循开源精神。</p>
+                <div class="section-header" style="margin-bottom: 16px;">
+                    <div class="section-title">关于网站与工作室</div>
+                </div>
+                <p style="color: var(--muted);">这是 Gtubn Studio 的网站。</p>
+                <p style="color: var(--muted);">&copy; 2026 Gtubn Studio, All Rights Reserved.</p>
                 <p><span>Web 呈现</span>GitHub Pages</p>
                 <p><span>Web 源代码辅助</span>Google Gemini</p>
             </div>
@@ -446,6 +540,9 @@
             </div>
 
             <div class="card-box about-img-box">
+                <div class="section-header" style="margin-bottom: 16px;">
+                    <div class="section-title">工作室标志</div>
+                </div>
                 <img src="logo.jpeg" alt="Gtubn Studio Logo" class="about-img">
             </div>
         </div>
@@ -543,13 +640,15 @@
         // ----------------- 环境检测逻辑 -----------------
         function detectGPU() {
             try {
-                const canvas = document.createElement('canvas');
-                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-                if (!gl) return "不支持 WebGL";
-                const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                return debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_GL) : "支持 (未获取特定渲染器)";
+                  const canvas = document.createElement('canvas');
+                  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        	  if (!gl) return "不支持";
+                  const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                  if (!debugInfo) return "不支持";
+                  const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_GL);
+                  return renderer ? renderer : "不支持";
             } catch (e) {
-                return "无法提取";
+                  return "不支持";
             }
         }
 
