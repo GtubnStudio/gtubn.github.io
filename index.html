@@ -125,7 +125,7 @@
         .notice-header {
             display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
             font-size: 12px; font-weight: 700; color: var(--accent);
-            text-transform: uppercase; letter-spacing: 0.8px;
+            letter-spacing: 0.5px;
         }
         .notice-dot {
             width: 8px; height: 8px; background-color: #ff4d4f; border-radius: 50%;
@@ -137,8 +137,8 @@
         .section-header { display: flex; justify-content: space-between; align-items: center; margin: 24px 0 12px 0; }
         .section-header:first-child { margin-top: 0; }
         .section-title {
-            font-size: 12px; font-weight: 700; color: var(--accent);
-            text-transform: uppercase; letter-spacing: 0.8px;
+            font-size: 13px; font-weight: 700; color: var(--accent);
+            letter-spacing: 0.5px;
             display: flex; align-items: center; gap: 6px;
         }
 
@@ -166,7 +166,7 @@
         .info-card .value { font-size: 13.5px; font-weight: 600; color: var(--text); word-break: break-all; }
 
         .badge {
-            font-size: 10px; padding: 2px 6px; border-radius: 4px;
+            font-size: 11px; padding: 2px 6px; border-radius: 4px;
             background: var(--badge-bg); color: var(--badge-text);
             font-weight: 600;
         }
@@ -230,12 +230,38 @@
             }
         }
 
-        /* 📁 文件列表专属样式 */
+        /* 📄 文件列表与声明样式 */
+        .file-notice {
+            margin-bottom: 20px;
+            padding: 16px 18px;
+            background: var(--notice-bg);
+            border: 1px solid var(--notice-border);
+            border-radius: 12px;
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+        .file-notice-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        .file-notice ul {
+            padding-left: 18px;
+            margin-top: 4px;
+        }
+        .file-notice li {
+            margin-bottom: 4px;
+        }
+        .file-notice li:last-child {
+            margin-bottom: 0;
+        }
         .file-list {
             display: flex;
             flex-direction: column;
             gap: 8px;
-            margin-top: 16px;
+            margin-top: 12px;
         }
         .file-item {
             display: flex;
@@ -257,7 +283,13 @@
             transform: translateX(4px);
         }
         .file-info { display: flex; align-items: center; gap: 10px; }
-        .file-icon { font-size: 16px; }
+        .file-tag {
+            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent);
+            opacity: 0.85;
+        }
         .file-status-msg {
             color: #f85149;
             font-size: 14px;
@@ -368,10 +400,23 @@
     <!-- 3. 文件导览页 -->
     <main id="page-files" class="page">
         <div class="card-box">
+            <!-- 详细的文件声明区域 -->
+            <div class="file-notice">
+                <div class="file-notice-title">文件服务与使用声明</div>
+                本页面列出的所有资源均由 GitHub API 动态实时同步展示：
+                <ul>
+                    <li><b>来源说明：</b>资源文件全部存储并托管于官方 Open Source GitHub 仓库，下载链接直连官方网络。</li>
+                    <li><b>开源协议与版权：</b>各项目及文件版权归原作者所有，请在下载、修改或再分发前严格遵守相关开源许可协议。</li>
+                    <li><b>免责声明：</b>本站仅提供文件目录检索与展示，不对文件内容的完整性、安全性或可用性作任何明示或暗示的保证。任何因下载或使用相关文件而导致的系统损坏或数据丢失，用户需自行承担相应风险。</li>
+                    <li><b>安全建议：</b>对于可执行文件、脚本或配置文件，建议在生产环境使用前进行必要的杀毒与安全审计。</li>
+                </ul>
+            </div>
+
             <div class="section-header">
-                <div class="section-title">📁 文件资源导览</div>
+                <div class="section-title">文件资源导览</div>
                 <button class="action-btn" id="refresh-files-btn">刷新目录</button>
             </div>
+
             <div id="file-list-container" class="file-list">
                 <div class="file-status-msg" style="color: var(--muted);">加载中...</div>
             </div>
@@ -384,7 +429,7 @@
             <div class="card-box about-content">
                 <p>这是 Gtubn Studio 的网站。</p>
                 <p>&copy; 2026 Gtubn Studio, All Rights Reserved.</p>
-                <p>我们的内容遵循 &lt;/&gt; 开源精神。</p>
+                <p>我们的内容遵循开源精神。</p>
                 <p><span>Web 呈现</span>GitHub Pages</p>
                 <p><span>Web 源代码辅助</span>Google Gemini</p>
             </div>
@@ -396,7 +441,7 @@
                 <div class="social-links">
                     <a href="https://www.douyin.com/user/MS4wLjABAAAA6nr-DmGgVuEr7MlgEWJX9GgkaFzZDaOBe3FCrgVJ4xZhi5Th--6S2MfE2Wzd7oUe" target="_blank" rel="noopener" class="social-btn">抖音</a>
                     <a href="https://space.bilibili.com/3546678657289013" target="_blank" rel="noopener" class="social-btn">哔哩哔哩</a>
-                    <span class="social-btn disabled">YouTube <span class="badge">即将推出</span></span>
+                    <span class="social-btn disabled">YouTube <span class="badge">敬请期待</span></span>
                 </div>
             </div>
 
@@ -460,7 +505,7 @@
                     if (path !== GITHUB_CONFIG.path && path.includes('/')) {
                         const backItem = document.createElement('div');
                         backItem.className = 'file-item';
-                        backItem.innerHTML = `<div class="file-info"><span class="file-icon">📁</span><b>.. (返回上一级)</b></div>`;
+                        backItem.innerHTML = `<div class="file-info"><span class="file-tag">[DIR]</span><b>.. (返回上一级)</b></div>`;
                         backItem.onclick = () => {
                             const parentPath = path.substring(0, path.lastIndexOf('/'));
                             fetchGitHubFiles(parentPath);
@@ -473,7 +518,7 @@
                         fileEl.className = 'file-item';
                         
                         if (item.type === 'dir') {
-                            fileEl.innerHTML = `<div class="file-info"><span class="file-icon">📁</span><span>${item.name}</span></div><span class="badge">文件夹</span>`;
+                            fileEl.innerHTML = `<div class="file-info"><span class="file-tag">[DIR]</span><span>${item.name}</span></div><span class="badge">文件夹</span>`;
                             fileEl.onclick = (e) => {
                                 e.preventDefault();
                                 fetchGitHubFiles(item.path);
@@ -481,7 +526,7 @@
                         } else {
                             fileEl.href = item.download_url;
                             fileEl.target = '_blank';
-                            fileEl.innerHTML = `<div class="file-info"><span class="file-icon">📄</span><span>${item.name}</span></div><span class="badge">下载 (${(item.size/1024).toFixed(1)} KB)</span>`;
+                            fileEl.innerHTML = `<div class="file-info"><span class="file-tag">[FILE]</span><span>${item.name}</span></div><span class="badge">文件 (${(item.size/1024).toFixed(1)} KB)</span>`;
                         }
                         container.appendChild(fileEl);
                     });
