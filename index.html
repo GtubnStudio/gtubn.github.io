@@ -107,7 +107,6 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
         }
 
-        /* 多卡片间距关联配置 */
         .about-cards-container {
             display: flex;
             flex-direction: column;
@@ -189,13 +188,11 @@
         }
         .action-btn:hover { background: var(--accent); color: #fff; }
 
-        /* 关于页结构优化 */
         .about-content { line-height: 1.8; font-size: 14px; }
         .about-content p { margin-bottom: 8px; }
         .about-content p:last-child { margin-bottom: 0; }
         .about-content span { color: var(--muted); display: inline-block; width: 140px; }
         
-        /* 关注我们板块：等宽网格布局 */
         .social-links { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
@@ -233,7 +230,6 @@
             }
         }
 
-        /* 动画关键帧 */
         @keyframes shine { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse {
@@ -245,7 +241,6 @@
 </head>
 <body>
 
-    <!-- 动态 Canvas 背景 -->
     <canvas id="bg-canvas"></canvas>
 
     <header>
@@ -255,6 +250,7 @@
     <nav class="nav">
         <a id="nav-home" class="active">主页</a>
         <a id="nav-env">环境检测</a>
+        <a href="/files/">文件</a>
         <a id="nav-about">关于</a>
     </nav>
 
@@ -333,10 +329,9 @@
         </div>
     </main>
 
-    <!-- 3. 关于页 (多卡片拆分) -->
+    <!-- 3. 关于页 -->
     <main id="page-about" class="page">
         <div class="about-cards-container">
-            <!-- 卡片 1：基础信息 -->
             <div class="card-box about-content">
                 <p>这是 Gtubn Studio 的网站。</p>
                 <p>&copy; 2026 Gtubn Studio, All Rights Reserved.</p>
@@ -345,7 +340,6 @@
                 <p><span>Web 源代码辅助</span>Google Gemini</p>
             </div>
 
-            <!-- 卡片 2：关注我们 -->
             <div class="card-box">
                 <div class="section-header" style="margin-bottom: 16px;">
                     <div class="section-title">关注我们</div>
@@ -357,7 +351,6 @@
                 </div>
             </div>
 
-            <!-- 卡片 3：工作室 Logo -->
             <div class="card-box about-img-box">
                 <img src="logo.jpeg" alt="Gtubn Studio Logo" class="about-img">
             </div>
@@ -365,7 +358,6 @@
     </main>
 
     <script>
-        // --- 1. Tab 切换控制器 ---
         const navItems = [
             { btn: document.getElementById('nav-home'), page: document.getElementById('page-home') },
             { btn: document.getElementById('nav-env'), page: document.getElementById('page-env') },
@@ -383,7 +375,6 @@
             });
         });
 
-        // --- 2. 深度环境检测模块 ---
         function detectGPU() {
             try {
                 const canvas = document.createElement('canvas');
@@ -420,14 +411,12 @@
             const ua = navigator.userAgent;
             let browser = "未知内核", os = "未知系统";
 
-            // 精准浏览器分析
             if (ua.includes("Edg/")) browser = "Microsoft Edge";
             else if (ua.includes("Chrome") && !ua.includes("Chromium")) browser = "Google Chrome";
             else if (ua.includes("Safari") && !ua.includes("Chrome")) browser = "Apple Safari";
             else if (ua.includes("Firefox")) browser = "Mozilla Firefox";
             else if (ua.includes("Trident") || ua.includes("MSIE")) browser = "Internet Explorer";
 
-            // OS 分析
             if (ua.includes("Win")) os = "Windows";
             else if (ua.includes("Mac")) os = "macOS";
             else if (ua.includes("Android")) os = "Android";
@@ -436,7 +425,6 @@
 
             const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-            // DOM 赋值
             document.getElementById('env-browser').innerText = browser;
             document.getElementById('env-os').innerText = os;
             document.getElementById('env-lang').innerText = navigator.language || "未知";
@@ -457,7 +445,6 @@
             document.getElementById('env-webgl2').innerText = checkWebGL2();
             document.getElementById('env-wasm').innerText = checkWasm();
 
-            // 电池 API
             if (navigator.getBattery) {
                 navigator.getBattery().then(battery => {
                     const level = Math.round(battery.level * 100);
@@ -468,7 +455,6 @@
                 document.getElementById('env-battery').innerText = "API 未受支持";
             }
 
-            // 网络与协议
             document.getElementById('env-proto').innerText = `${location.protocol.toUpperCase().replace(':','')} (Port: ${location.port || (location.protocol === 'https:' ? '443' : '80')})`;
             
             const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
@@ -480,7 +466,6 @@
                 document.getElementById('env-network-speed').innerText = "无 Connection API";
             }
 
-            // 现代 Performance Timing 检测
             window.addEventListener('load', () => {
                 setTimeout(() => {
                     const navEntries = performance.getEntriesByType('navigation');
@@ -497,7 +482,6 @@
             document.getElementById('env-ua').innerText = ua;
         }
 
-        // 复制诊断数据
         document.getElementById('copy-btn').addEventListener('click', () => {
             const info = `Gtubn Studio 环境诊断报告:
 - 浏览器: ${document.getElementById('env-browser').innerText}
@@ -516,7 +500,6 @@
             }).catch(() => { alert("复制失败，请手动选择。"); });
         });
 
-        // 绑定事件监听
         window.addEventListener('resize', () => {
             const vp = document.getElementById('env-viewport');
             if (vp) vp.innerText = `${window.innerWidth} × ${window.innerHeight}`;
@@ -526,7 +509,6 @@
 
         detectEnvironment();
 
-        // --- 3. 高性能 Canvas 粒子背景 ---
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let width, height, particles = [];
