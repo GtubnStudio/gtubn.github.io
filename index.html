@@ -230,6 +230,42 @@
             }
         }
 
+        /* 📁 文件列表专属样式 */
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-inner);
+            border: 1px solid var(--card-inner-border);
+            padding: 12px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text);
+            font-size: 14px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .file-item:hover {
+            border-color: var(--border-glow);
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateX(4px);
+        }
+        .file-info { display: flex; align-items: center; gap: 10px; }
+        .file-icon { font-size: 16px; }
+        .file-status-msg {
+            color: #f85149;
+            font-size: 14px;
+            text-align: center;
+            padding: 20px 0;
+            line-height: 1.6;
+        }
+
         @keyframes shine { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse {
@@ -250,7 +286,7 @@
     <nav class="nav">
         <a id="nav-home" class="active">主页</a>
         <a id="nav-env">环境检测</a>
-        <a href="/files/">文件</a>
+        <a id="nav-files">文件</a>
         <a id="nav-about">关于</a>
     </nav>
 
@@ -329,7 +365,20 @@
         </div>
     </main>
 
-    <!-- 3. 关于页 -->
+    <!-- 3. 文件导览页 -->
+    <main id="page-files" class="page">
+        <div class="card-box">
+            <div class="section-header">
+                <div class="section-title">📁 文件资源导览</div>
+                <button class="action-btn" id="refresh-files-btn">刷新目录</button>
+            </div>
+            <div id="file-list-container" class="file-list">
+                <div class="file-status-msg" style="color: var(--muted);">加载中...</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 4. 关于页 -->
     <main id="page-about" class="page">
         <div class="about-cards-container">
             <div class="card-box about-content">
@@ -358,9 +407,18 @@
     </main>
 
     <script>
+        // ----------------- GitHub 文件列表获取配置 -----------------
+        const GITHUB_CONFIG = {
+            username: 'GtubnStudio',
+            repo: 'gtubnstudio.github.io',
+            path: 'files'
+        };
+
+        // ----------------- 页面路由与切换 -----------------
         const navItems = [
             { btn: document.getElementById('nav-home'), page: document.getElementById('page-home') },
             { btn: document.getElementById('nav-env'), page: document.getElementById('page-env') },
+            { btn: document.getElementById('nav-files'), page: document.getElementById('page-files') },
             { btn: document.getElementById('nav-about'), page: document.getElementById('page-about') }
         ];
 
@@ -372,9 +430,72 @@
                 });
                 item.btn.classList.add('active');
                 item.page.classList.add('active');
+
+                if (item.btn.id === 'nav-files') {
+                    fetchGitHubFiles(GITHUB_CONFIG.path);
+                }
             });
         });
 
+        // ----------------- 获取 files 文件夹中的动态内容 -----------------
+        function fetchGitHubFiles(path = GITHUB_CONFIG.path) {
+            const container = document.getElementById('file-list-container');
+            container.innerHTML = `<div class="file-status-msg" style="color: var(--muted);">读取目录中...</div>`;
+
+            const url = `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/contents/${path}`;
+
+            fetch(url)
+                .then(res => {
+                    if (!res.ok) throw new Error('API请求失败');
+                    return res.json();
+                })
+                .then(data => {
+                    if (!Array.isArray(data)) {
+                        container.innerHTML = `<div class="file-status-msg">未找到相关文件</div>`;
+                        return;
+                    }
+
+                    container.innerHTML = '';
+                    
+                    if (path !== GITHUB_CONFIG.path && path.includes('/')) {
+                        const backItem = document.createElement('div');
+                        backItem.className = 'file-item';
+                        backItem.innerHTML = `<div class="file-info"><span class="file-icon">📁</span><b>.. (返回上一级)</b></div>`;
+                        backItem.onclick = () => {
+                            const parentPath = path.substring(0, path.lastIndexOf('/'));
+                            fetchGitHubFiles(parentPath);
+                        };
+                        container.appendChild(backItem);
+                    }
+
+                    data.forEach(item => {
+                        const fileEl = document.createElement('a');
+                        fileEl.className = 'file-item';
+                        
+                        if (item.type === 'dir') {
+                            fileEl.innerHTML = `<div class="file-info"><span class="file-icon">📁</span><span>${item.name}</span></div><span class="badge">文件夹</span>`;
+                            fileEl.onclick = (e) => {
+                                e.preventDefault();
+                                fetchGitHubFiles(item.path);
+                            };
+                        } else {
+                            fileEl.href = item.download_url;
+                            fileEl.target = '_blank';
+                            fileEl.innerHTML = `<div class="file-info"><span class="file-icon">📄</span><span>${item.name}</span></div><span class="badge">下载 (${(item.size/1024).toFixed(1)} KB)</span>`;
+                        }
+                        container.appendChild(fileEl);
+                    });
+                })
+                .catch(err => {
+                    container.innerHTML = `<div class="file-status-msg">读取文件目录失败，请确认仓库中存在 files 文件夹。</div>`;
+                });
+        }
+
+        document.getElementById('refresh-files-btn').addEventListener('click', () => {
+            fetchGitHubFiles(GITHUB_CONFIG.path);
+        });
+
+        // ----------------- 环境检测逻辑 -----------------
         function detectGPU() {
             try {
                 const canvas = document.createElement('canvas');
@@ -509,6 +630,7 @@
 
         detectEnvironment();
 
+        // ----------------- 背景 Canvas 粒子动画 -----------------
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let width, height, particles = [];
