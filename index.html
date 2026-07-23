@@ -107,6 +107,13 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
         }
 
+        /* 多卡片间距关联配置 */
+        .about-cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
         /* 主页板块 */
         .home-content h2 { font-size: 22px; font-weight: 600; margin-bottom: 12px; color: var(--text); letter-spacing: -0.2px; }
         .home-content p { font-size: 15px; color: var(--muted); line-height: 1.7; }
@@ -182,14 +189,13 @@
         }
         .action-btn:hover { background: var(--accent); color: #fff; }
 
-        /* 关于页结构 */
+        /* 关于页结构优化 */
         .about-content { line-height: 1.8; font-size: 14px; }
-        .about-content p { margin-bottom: 12px; }
+        .about-content p { margin-bottom: 8px; }
+        .about-content p:last-child { margin-bottom: 0; }
         .about-content span { color: var(--muted); display: inline-block; width: 140px; }
         
-        .social-section { margin-top: 24px; padding-top: 18px; border-top: 1px dashed var(--border); }
-        
-        /* 关注我们板块优化：网格/等宽对齐 */
+        /* 关注我们板块：等宽网格布局 */
         .social-links { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
@@ -214,8 +220,9 @@
         .social-btn.disabled { opacity: 0.4; cursor: not-allowed; border-style: dashed; }
         .social-btn.disabled:hover { transform: none; box-shadow: none; background: var(--card-inner); color: var(--text); }
 
+        .about-img-box { text-align: center; }
         .about-img {
-            margin-top: 24px; max-width: 100%; height: auto;
+            max-width: 100%; height: auto;
             border-radius: 12px; border: 1px solid var(--border);
             transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
@@ -326,17 +333,21 @@
         </div>
     </main>
 
-    <!-- 3. 关于页 -->
+    <!-- 3. 关于页 (多卡片拆分) -->
     <main id="page-about" class="page">
-        <div class="card-box about-content">
-            <p>这是 Gtubn Studio 的网站。</p>
-            <p>&copy; 2026 Gtubn Studio, All Rights Reserved.</p>
-            <p>我们的内容遵循 &lt;/&gt; 开源精神。</p>
-            <p><span>Web 呈现</span>GitHub Pages</p>
-            <p><span>Web 源代码辅助</span>Google Gemini</p>
+        <div class="about-cards-container">
+            <!-- 卡片 1：基础信息 -->
+            <div class="card-box about-content">
+                <p>这是 Gtubn Studio 的网站。</p>
+                <p>&copy; 2026 Gtubn Studio, All Rights Reserved.</p>
+                <p>我们的内容遵循 &lt;/&gt; 开源精神。</p>
+                <p><span>Web 呈现</span>GitHub Pages</p>
+                <p><span>Web 源代码辅助</span>Google Gemini</p>
+            </div>
 
-            <div class="social-section">
-                <div class="section-header" style="margin-bottom: 12px;">
+            <!-- 卡片 2：关注我们 -->
+            <div class="card-box">
+                <div class="section-header" style="margin-bottom: 16px;">
                     <div class="section-title">关注我们</div>
                 </div>
                 <div class="social-links">
@@ -346,7 +357,10 @@
                 </div>
             </div>
 
-            <img src="logo.jpeg" alt="Gtubn Studio Logo" class="about-img">
+            <!-- 卡片 3：工作室 Logo -->
+            <div class="card-box about-img-box">
+                <img src="logo.jpeg" alt="Gtubn Studio Logo" class="about-img">
+            </div>
         </div>
     </main>
 
