@@ -8,33 +8,53 @@
     <link rel="icon" href="logo1.jpeg" type="image/jpeg">
     <style>
         :root {
-            --bg: #0d1117; --panel: rgba(22, 27, 34, 0.75); --border: rgba(255, 255, 255, 0.12);
-            --text: #c9d1d9; --muted: #8b949e; --accent: #58a6ff;
-            --accent-glow: rgba(88, 166, 255, 0.35);
-            --particle: rgba(88, 166, 255, 0.3);
-            --mouse-glow: rgba(88, 166, 255, 0.12);
-            --notice-bg: rgba(88, 166, 255, 0.08);
-            --notice-border: rgba(88, 166, 255, 0.25);
+            --bg: #0b0e14; 
+            --panel: rgba(22, 27, 34, 0.7); 
+            --panel-hover: rgba(30, 36, 46, 0.85);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(88, 166, 255, 0.25);
+            --text: #e6edf3; 
+            --muted: #8b949e; 
+            --accent: #58a6ff;
+            --accent-glow: rgba(88, 166, 255, 0.25);
+            --particle: rgba(88, 166, 255, 0.35);
+            --mouse-glow: rgba(88, 166, 255, 0.08);
+            --notice-bg: rgba(88, 166, 255, 0.06);
+            --notice-border: rgba(88, 166, 255, 0.2);
+            --card-inner: rgba(255, 255, 255, 0.02);
+            --card-inner-border: rgba(255, 255, 255, 0.05);
+            --badge-bg: rgba(88, 166, 255, 0.15);
+            --badge-text: #79c0ff;
         }
 
         @media (prefers-color-scheme: light) {
             :root {
-                --bg: #f6f8fa; --panel: rgba(255, 255, 255, 0.8); --border: rgba(0, 0, 0, 0.08);
-                --text: #24292f; --muted: #57606a; --accent: #0969da;
-                --accent-glow: rgba(9, 105, 218, 0.25);
-                --particle: rgba(9, 105, 218, 0.25);
-                --mouse-glow: rgba(9, 105, 218, 0.08);
-                --notice-bg: rgba(9, 105, 218, 0.06);
-                --notice-border: rgba(9, 105, 218, 0.2);
+                --bg: #f4f6f8; 
+                --panel: rgba(255, 255, 255, 0.75); 
+                --panel-hover: rgba(255, 255, 255, 0.95);
+                --border: rgba(0, 0, 0, 0.06);
+                --border-glow: rgba(9, 105, 218, 0.2);
+                --text: #1f2328; 
+                --muted: #656d76; 
+                --accent: #0969da;
+                --accent-glow: rgba(9, 105, 218, 0.18);
+                --particle: rgba(9, 105, 218, 0.3);
+                --mouse-glow: rgba(9, 105, 218, 0.05);
+                --notice-bg: rgba(9, 105, 218, 0.04);
+                --notice-border: rgba(9, 105, 218, 0.15);
+                --card-inner: rgba(0, 0, 0, 0.02);
+                --card-inner-border: rgba(0, 0, 0, 0.04);
+                --badge-bg: rgba(9, 105, 218, 0.1);
+                --badge-text: #0969da;
             }
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background: var(--bg); color: var(--text);
-            max-width: 800px; margin: 0 auto; padding: 30px 20px;
+            max-width: 840px; margin: 0 auto; padding: 40px 20px;
             transition: background 0.4s ease, color 0.4s ease;
             position: relative; overflow-x: hidden; min-height: 100vh;
             touch-action: manipulation;
@@ -47,13 +67,13 @@
         }
 
         /* Header */
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
         h1 { 
-            font-size: 21px; font-weight: 700; cursor: pointer;
-            background: linear-gradient(135deg, var(--text) 0%, var(--accent) 60%, #bc8cff 100%);
+            font-size: 22px; font-weight: 700; cursor: pointer; letter-spacing: -0.3px;
+            background: linear-gradient(135deg, var(--text) 20%, var(--accent) 70%, #bc8cff 100%);
             background-size: 200% auto;
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: shine 5s linear infinite;
+            animation: shine 6s linear infinite;
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         @media (hover: hover) {
@@ -61,67 +81,60 @@
         }
 
         /* 导航栏 */
-        .nav { display: flex; gap: 16px; margin-bottom: 30px; font-size: 14px; position: relative; }
+        .nav { display: flex; gap: 8px; margin-bottom: 28px; position: relative; flex-wrap: wrap; }
         .nav a { 
             color: var(--muted); text-decoration: none; cursor: pointer; 
-            padding: 8px 18px; border-radius: 20px;
-            position: relative; transition: all 0.25s ease;
-            user-select: none;
+            padding: 8px 18px; border-radius: 12px; font-size: 14px; font-weight: 500;
+            position: relative; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none; border: 1px solid transparent;
         }
+        .nav a:hover { color: var(--text); }
         .nav a.active { 
             color: var(--accent); font-weight: 600;
             background: var(--panel);
-            border: 1px solid var(--border);
-            box-shadow: 0 0 16px var(--accent-glow);
+            border-color: var(--border-glow);
+            box-shadow: 0 4px 20px var(--accent-glow);
         }
 
-        /* 页面卡片 极其平滑的淡入效果 */
-        .page { display: none; opacity: 0; transform: translateY(10px); }
+        /* 页面卡片淡入 */
+        .page { display: none; opacity: 0; transform: translateY(12px); }
         .page.active { 
             display: block; 
-            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
         }
 
-        /* 优化后的卡片，消除了复杂的 3D 旋转与倾斜，仅保留微弱平滑的微上浮 */
+        /* 卡片容器 */
         .card-box {
             background: var(--panel);
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border); border-radius: 16px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border); border-radius: 18px;
             padding: 32px 28px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-            will-change: transform;
-        }
-        @media (hover: hover) {
-            .card-box:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-            }
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* 主页 */
+        /* 主页内容 */
         .home-content h2 { 
             font-size: 22px; font-weight: 600; margin-bottom: 12px;
-            color: var(--text);
+            color: var(--text); letter-spacing: -0.2px;
         }
         .home-content p { 
             font-size: 15px; color: var(--muted); line-height: 1.7;
         }
 
-        /* 公告栏样式 */
+        /* 公告栏 */
         .notice-box {
-            margin-top: 20px;
+            margin-top: 24px;
             padding: 16px 20px;
             background: var(--notice-bg);
             border: 1px solid var(--notice-border);
-            border-radius: 12px;
+            border-radius: 14px;
         }
         .notice-header {
             display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
-            font-size: 13px; font-weight: 600; color: var(--accent);
-            text-transform: uppercase; letter-spacing: 0.5px;
+            font-size: 12px; font-weight: 700; color: var(--accent);
+            text-transform: uppercase; letter-spacing: 0.8px;
         }
-        /* 呼吸红点标识 */
         .notice-dot {
             width: 8px; height: 8px; background-color: #ff4d4f; border-radius: 50%;
             box-shadow: 0 0 0 rgba(255, 77, 79, 0.4);
@@ -131,93 +144,129 @@
             font-size: 14px; color: var(--text); line-height: 1.6;
         }
 
-        /* 关于页 */
-        .about-content { line-height: 1.8; font-size: 14px; }
-        .about-content p { margin-bottom: 12px; }
-        .about-content span { color: var(--muted); display: inline-block; width: 85px; }
-        
-        /* 社交链接区域 */
-        .social-section {
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 1px dashed var(--border);
+        /* 浏览器检测页分类及网格 */
+        .section-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin: 24px 0 12px 0;
         }
-        .social-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--muted);
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .section-header:first-child { margin-top: 0; }
+        .section-title {
+            font-size: 12px; font-weight: 700; color: var(--accent);
+            text-transform: uppercase; letter-spacing: 0.8px;
+            display: flex; align-items: center; gap: 6px;
         }
-        .social-links {
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 12px;
+        }
+
+        .info-card {
+            background: var(--card-inner);
+            border: 1px solid var(--card-inner-border);
+            border-radius: 12px;
+            padding: 12px 16px;
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .social-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 14px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border);
-            color: var(--text);
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 500;
+            flex-direction: column;
+            justify-content: center;
             transition: all 0.2s ease;
         }
         @media (hover: hover) {
-            .social-btn:hover {
-                background: var(--notice-bg);
-                border-color: var(--accent);
-                color: var(--accent);
+            .info-card:hover {
+                border-color: var(--border-glow);
+                background: rgba(255, 255, 255, 0.04);
                 transform: translateY(-1px);
+            }
+        }
+
+        .info-card .label {
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-card .value {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--text);
+            word-break: break-all;
+        }
+
+        .badge {
+            font-size: 10px; padding: 2px 6px; border-radius: 4px;
+            background: var(--badge-bg); color: var(--badge-text);
+            font-weight: 600;
+        }
+
+        .ua-box {
+            margin-top: 10px; padding: 14px;
+            background: var(--card-inner);
+            border: 1px solid var(--card-inner-border);
+            border-radius: 12px;
+            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 12px; color: var(--muted); line-height: 1.6;
+            word-break: break-all; user-select: all;
+        }
+
+        .action-btn {
+            background: var(--notice-bg);
+            border: 1px solid var(--notice-border);
+            color: var(--accent);
+            padding: 6px 12px; border-radius: 8px;
+            font-size: 12px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        .action-btn:hover {
+            background: var(--accent); color: #fff;
+        }
+
+        /* 关于页结构 */
+        .about-content { line-height: 1.8; font-size: 14px; }
+        .about-content p { margin-bottom: 12px; }
+        .about-content span { color: var(--muted); display: inline-block; width: 90px; }
+        
+        .social-section {
+            margin-top: 24px; padding-top: 18px;
+            border-top: 1px dashed var(--border);
+        }
+        .social-links { display: flex; flex-wrap: wrap; gap: 10px; }
+        .social-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 16px; border-radius: 10px;
+            background: var(--card-inner); border: 1px solid var(--border);
+            color: var(--text); text-decoration: none; font-size: 13px; font-weight: 500;
+            transition: all 0.25s ease;
+        }
+        @media (hover: hover) {
+            .social-btn:hover {
+                background: var(--notice-bg); border-color: var(--accent);
+                color: var(--accent); transform: translateY(-2px);
                 box-shadow: 0 4px 12px var(--accent-glow);
             }
         }
-        .social-btn:active {
-            transform: scale(0.97);
-        }
-        .social-btn.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            border-style: dashed;
-        }
-        .social-btn.disabled:hover {
-            background: rgba(255, 255, 255, 0.04);
-            border-color: var(--border);
-            color: var(--text);
-            transform: none;
-            box-shadow: none;
-        }
-        .social-tag {
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            background: var(--border);
-            color: var(--muted);
-        }
+        .social-btn:active { transform: scale(0.97); }
+        .social-btn.disabled { opacity: 0.4; cursor: not-allowed; border-style: dashed; }
+        .social-btn.disabled:hover { transform: none; box-shadow: none; background: var(--card-inner); color: var(--text); }
 
         .about-img {
-            margin-top: 22px; max-width: 100%; height: auto;
-            border-radius: 10px; border: 1px solid var(--border);
+            margin-top: 24px; max-width: 100%; height: auto;
+            border-radius: 12px; border: 1px solid var(--border);
             transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
         @media (hover: hover) {
             .about-img:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 8px 16px var(--accent-glow);
+                box-shadow: 0 10px 20px var(--accent-glow);
             }
         }
 
-        /* Keyframes */
+        /* 动画 Keyframes */
         @keyframes shine { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-        @keyframes fadeIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.6); }
             70% { box-shadow: 0 0 0 8px rgba(255, 77, 79, 0); }
@@ -227,7 +276,7 @@
 </head>
 <body>
 
-    <!-- 动态 Canvas -->
+    <!-- 动态 Canvas 背景 -->
     <canvas id="bg-canvas"></canvas>
 
     <header>
@@ -236,16 +285,16 @@
 
     <div class="nav">
         <a id="nav-home" class="active">主页</a>
+        <a id="nav-env">环境检测</a>
         <a id="nav-about">关于</a>
     </div>
 
-    <!-- 主页 -->
+    <!-- 1. 主页 -->
     <div id="page-home" class="page active">
         <div class="card-box home-content">
             <h2>欢迎来到 Gtubn Studio 的网站！</h2>
             <p>海内存知己，天涯若比邻。</p>
 
-            <!-- 主页公告栏 -->
             <div class="notice-box">
                 <div class="notice-header">
                     <span class="notice-dot"></span>
@@ -258,7 +307,64 @@
         </div>
     </div>
 
-    <!-- 关于 页 -->
+    <!-- 2. 浏览器与环境检测页 (极高细节) -->
+    <div id="page-env" class="page">
+        <div class="card-box">
+            <div class="section-header">
+                <div class="section-title">基础与环境</div>
+                <button class="action-btn" id="copy-btn">复制检测诊断</button>
+            </div>
+            <div class="info-grid">
+                <div class="info-card"><div class="label">浏览器核心</div><div class="value" id="env-browser">检测中...</div></div>
+                <div class="info-card"><div class="label">操作系统</div><div class="value" id="env-os">检测中...</div></div>
+                <div class="info-card"><div class="label">首选语言</div><div class="value" id="env-lang">检测中...</div></div>
+                <div class="info-card"><div class="label">网络连接</div><div class="value" id="env-online">检测中...</div></div>
+                <div class="info-card"><div class="label">配色主题</div><div class="value" id="env-theme">检测中...</div></div>
+                <div class="info-card"><div class="label">系统时区</div><div class="value" id="env-timezone">检测中...</div></div>
+            </div>
+
+            <div class="section-header">
+                <div class="section-title">屏幕与图形显示</div>
+            </div>
+            <div class="info-grid">
+                <div class="info-card"><div class="label">屏幕像素分辨率</div><div class="value" id="env-screen">检测中...</div></div>
+                <div class="info-card"><div class="label">当前窗口视口</div><div class="value" id="env-viewport">检测中...</div></div>
+                <div class="info-card"><div class="label">缩放比 (DPR)</div><div class="value" id="env-dpr">检测中...</div></div>
+                <div class="info-card"><div class="label">色深与刷新频率</div><div class="value" id="env-colordepth">检测中...</div></div>
+            </div>
+
+            <div class="section-header">
+                <div class="section-title">硬件、算力与渲染</div>
+            </div>
+            <div class="info-grid">
+                <div class="info-card"><div class="label">CPU 逻辑核心</div><div class="value" id="env-cpu">检测中...</div></div>
+                <div class="info-card"><div class="label">运行内存估计</div><div class="value" id="env-memory">检测中...</div></div>
+                <div class="info-card"><div class="label">GPU 渲染器信息</div><div class="value" id="env-gpu">检测中...</div></div>
+                <div class="info-card"><div class="label">WebGL 2.0 支持</div><div class="value" id="env-webgl2">检测中...</div></div>
+                <div class="info-card"><div class="label">WebAssembly (WASM)</div><div class="value" id="env-wasm">检测中...</div></div>
+                <div class="info-card"><div class="label">电池与电量</div><div class="value" id="env-battery">检测中...</div></div>
+            </div>
+
+            <div class="section-header">
+                <div class="section-title">网络能力与性能诊断</div>
+            </div>
+            <div class="info-grid">
+                <div class="info-card"><div class="label">协议 / 端口</div><div class="value" id="env-proto">检测中...</div></div>
+                <div class="info-card"><div class="label">估计带宽 & 延迟</div><div class="value" id="env-network-speed">检测中...</div></div>
+                <div class="info-card"><div class="label">页面首次渲染耗时</div><div class="value" id="env-performance">检测中...</div></div>
+                <div class="info-card"><div class="label">WebRTC 支持</div><div class="value" id="env-webrtc">检测中...</div></div>
+                <div class="info-card"><div class="label">剪贴板权限 (Clipboard API)</div><div class="value" id="env-clipboard">检测中...</div></div>
+                <div class="info-card"><div class="label">Local Storage</div><div class="value" id="env-storage">检测中...</div></div>
+            </div>
+
+            <div class="section-header">
+                <div class="section-title">User-Agent 标识</div>
+            </div>
+            <div class="ua-box" id="env-ua">检测中...</div>
+        </div>
+    </div>
+
+    <!-- 3. 关于页 -->
     <div id="page-about" class="page">
         <div class="card-box about-content">
             <p>这是 Gtubn Studio 的网站。</p>
@@ -266,9 +372,10 @@
             <p>我们的内容遵循 &lt;/&gt; 开源精神。</p>
             <p><span>Web 呈现</span>GitHub Pages</p>
 
-            <!-- 社交平台链接 -->
             <div class="social-section">
-                <div class="social-title">关注我们</div>
+                <div class="section-header" style="margin-bottom: 12px;">
+                    <div class="section-title">关注我们</div>
+                </div>
                 <div class="social-links">
                     <a href="https://www.douyin.com/user/MS4wLjABAAAA6nr-DmGgVuEr7MlgEWJX9GgkaFzZDaOBe3FCrgVJ4xZhi5Th--6S2MfE2Wzd7oUe" target="_blank" rel="noopener" class="social-btn">
                         抖音
@@ -277,7 +384,7 @@
                         哔哩哔哩
                     </a>
                     <span class="social-btn disabled">
-                        YouTube <span class="social-tag">即将推出</span>
+                        YouTube <span class="badge">即将推出</span>
                     </span>
                 </div>
             </div>
@@ -287,24 +394,171 @@
     </div>
 
     <script>
-        // 1. 页面切换控制
-        const btnHome = document.getElementById('nav-home');
-        const btnAbout = document.getElementById('nav-about');
-        const pgHome = document.getElementById('page-home');
-        const pgAbout = document.getElementById('page-about');
+        // --- 1. 页面 Tab 切换 ---
+        const navs = [
+            { btn: document.getElementById('nav-home'), page: document.getElementById('page-home') },
+            { btn: document.getElementById('nav-env'), page: document.getElementById('page-env') },
+            { btn: document.getElementById('nav-about'), page: document.getElementById('page-about') }
+        ];
 
-        btnHome.addEventListener('click', () => {
-            if (btnHome.classList.contains('active')) return;
-            btnHome.className = 'active'; btnAbout.className = '';
-            pgHome.className = 'page active'; pgAbout.className = 'page';
-        });
-        btnAbout.addEventListener('click', () => {
-            if (btnAbout.classList.contains('active')) return;
-            btnAbout.className = 'active'; btnHome.className = '';
-            pgAbout.className = 'page active'; pgHome.className = 'page';
+        navs.forEach(item => {
+            item.btn.addEventListener('click', () => {
+                navs.forEach(n => {
+                    n.btn.classList.remove('active');
+                    n.page.classList.remove('active');
+                });
+                item.btn.classList.add('active');
+                item.page.classList.add('active');
+            });
         });
 
-        // 2. 触摸与鼠标全兼容粒子 Canvas 交互（保持背景柔和连线）
+        // --- 2. 深度环境检测 ---
+        function detectGPU() {
+            try {
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (!gl) return "不支持 WebGL";
+                const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                return debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_GL) : "支持 (无特定渲染器信息)";
+            } catch (e) {
+                return "无法提取";
+            }
+        }
+
+        function checkWebGL2() {
+            try {
+                return !!document.createElement('canvas').getContext('webgl2') ? "支持" : "不支持";
+            } catch (e) { return "不支持"; }
+        }
+
+        function checkWasm() {
+            return (typeof WebAssembly === "object" && typeof WebAssembly.instantiate === "function") ? "支持" : "不支持";
+        }
+
+        function testLocalStorage() {
+            try {
+                localStorage.setItem('__test__', '1');
+                localStorage.removeItem('__test__');
+                return "正常 (可用)";
+            } catch (e) {
+                return "不可用 / 隐私模式屏蔽";
+            }
+        }
+
+        function detectEnvironment() {
+            const ua = navigator.userAgent;
+            let browser = "未知内核";
+            let os = "未知系统";
+
+            // 精准浏览器内核提取
+            if (ua.includes("Edg/")) browser = "Microsoft Edge";
+            else if (ua.includes("Chrome") && !ua.includes("Chromium")) browser = "Google Chrome";
+            else if (ua.includes("Safari") && !ua.includes("Chrome")) browser = "Apple Safari";
+            else if (ua.includes("Firefox")) browser = "Mozilla Firefox";
+            else if (ua.includes("Trident") || ua.includes("MSIE")) browser = "Internet Explorer";
+
+            // 精准 OS 提取
+            if (ua.includes("Win")) os = "Windows";
+            else if (ua.includes("Mac")) os = "macOS";
+            else if (ua.includes("Android")) os = "Android";
+            else if (ua.includes("iPhone") || ua.includes("iPad")) os = "iOS";
+            else if (ua.includes("Linux")) os = "Linux";
+
+            const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            // DOM 填充
+            document.getElementById('env-browser').innerText = browser;
+            document.getElementById('env-os').innerText = os;
+            document.getElementById('env-lang').innerText = navigator.language || "未知";
+            document.getElementById('env-online').innerHTML = navigator.onLine ? `<span class="badge" style="background:rgba(46,160,67,0.15);color:#3fb950;">在线</span>` : `<span class="badge" style="background:rgba(248,81,73,0.15);color:#f85149;">离线</span>`;
+            document.getElementById('env-theme').innerText = isDark ? "暗黑 (Dark)" : "浅色 (Light)";
+            document.getElementById('env-timezone').innerText = Intl.DateTimeFormat().resolvedOptions().timeZone || "未知";
+
+            document.getElementById('env-screen').innerText = `${window.screen.width} × ${window.screen.height}`;
+            document.getElementById('env-viewport').innerText = `${window.innerWidth} × ${window.innerHeight}`;
+            document.getElementById('env-dpr').innerText = `${window.devicePixelRatio || 1}x`;
+            document.getElementById('env-colordepth').innerText = `${window.screen.colorDepth || 24}-bit`;
+
+            document.getElementById('env-cpu').innerText = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} 逻辑线程` : "未知";
+            document.getElementById('env-memory').innerText = navigator.deviceMemory ? `≥ ${navigator.deviceMemory} GB` : "受浏览器保护限制";
+            document.getElementById('env-gpu').innerText = detectGPU();
+            document.getElementById('env-webgl2').innerText = checkWebGL2();
+            document.getElementById('env-wasm').innerText = checkWasm();
+
+            // 电池 API 异步检测
+            if (navigator.getBattery) {
+                navigator.getBattery().then(battery => {
+                    const level = Math.round(battery.level * 100);
+                    const charging = battery.charging ? " (充电中)" : "";
+                    document.getElementById('env-battery').innerText = `${level}%${charging}`;
+                }).catch(() => { document.getElementById('env-battery').innerText = "未提供权限"; });
+            } else {
+                document.getElementById('env-battery').innerText = "API 未受支持";
+            }
+
+            // 网络与协议
+            document.getElementById('env-proto').innerText = `${location.protocol.toUpperCase().replace(':','')} (Port: ${location.port || (location.protocol === 'https:' ? '443' : '80')})`;
+            
+            const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            if (conn) {
+                const type = conn.effectiveType ? conn.effectiveType.toUpperCase() : "未知";
+                const downlink = conn.downlink ? `${conn.downlink} Mb/s` : "";
+                document.getElementById('env-network-speed').innerText = `${type} ${downlink}`.trim();
+            } else {
+                document.getElementById('env-network-speed').innerText = "无 Connection API";
+            }
+
+            // 性能耗时
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    const perf = performance.timing;
+                    if (perf) {
+                        const pageLoadTime = perf.loadEventEnd - perf.navigationStart;
+                        if (pageLoadTime > 0) {
+                            document.getElementById('env-performance').innerText = `${pageLoadTime} ms`;
+                        }
+                    }
+                }, 0);
+            });
+
+            document.getElementById('env-webrtc').innerText = (window.RTCPeerConnection || window.webkitRTCPeerConnection) ? "支持" : "不支持";
+            document.getElementById('env-clipboard').innerText = (navigator.clipboard) ? "支持" : "受限";
+            document.getElementById('env-storage').innerText = testLocalStorage();
+            document.getElementById('env-ua').innerText = ua;
+        }
+
+        // 复制诊断数据功能
+        document.getElementById('copy-btn').addEventListener('click', () => {
+            const info = `Gtubn Studio 环境诊断报告:
+- 浏览器: ${document.getElementById('env-browser').innerText}
+- OS: ${document.getElementById('env-os').innerText}
+- 屏宽: ${document.getElementById('env-screen').innerText}
+- 视口: ${document.getElementById('env-viewport').innerText}
+- DPR: ${document.getElementById('env-dpr').innerText}
+- CPU: ${document.getElementById('env-cpu').innerText}
+- GPU: ${document.getElementById('env-gpu').innerText}
+- User-Agent: ${navigator.userAgent}`;
+            
+            navigator.clipboard.writeText(info).then(() => {
+                const btn = document.getElementById('copy-btn');
+                btn.innerText = "已复制到剪贴板！";
+                setTimeout(() => { btn.innerText = "复制检测诊断"; }, 2000);
+            }).catch(() => {
+                alert("复制失败，请手动选择复制。");
+            });
+        });
+
+        window.addEventListener('resize', () => {
+            const vp = document.getElementById('env-viewport');
+            if (vp) vp.innerText = `${window.innerWidth} × ${window.innerHeight}`;
+        });
+        window.addEventListener('online', detectEnvironment);
+        window.addEventListener('offline', detectEnvironment);
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', detectEnvironment);
+
+        detectEnvironment();
+
+        // --- 3. Canvas 粒子背景 (动画流畅度优化) ---
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let width, height, particles = [];
@@ -313,11 +567,11 @@
         function initCanvas() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
-            particles = Array.from({ length: Math.min(Math.floor(width / 20), 40) }, () => ({
+            particles = Array.from({ length: Math.min(Math.floor(width / 18), 45) }, () => ({
                 x: Math.random() * width,
                 y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.5,
-                vy: (Math.random() - 0.5) * 0.5,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4,
                 size: Math.random() * 2 + 1
             }));
         }
@@ -337,6 +591,7 @@
         window.addEventListener('mousemove', updatePointer, { passive: true });
         window.addEventListener('touchstart', updatePointer, { passive: true });
         window.addEventListener('touchmove', updatePointer, { passive: true });
+        window.addEventListener('mouseleave', () => { pointer.x = -1000; pointer.y = -1000; });
         window.addEventListener('touchend', () => { pointer.x = -1000; pointer.y = -1000; }, { passive: true });
 
         function drawCanvas() {
@@ -346,7 +601,7 @@
             const mouseGlow = style.getPropertyValue('--mouse-glow').trim();
 
             if (pointer.x > 0) {
-                const glowRadius = pointer.isTouch ? 160 : 200;
+                const glowRadius = pointer.isTouch ? 150 : 200;
                 const gradient = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, glowRadius);
                 gradient.addColorStop(0, mouseGlow);
                 gradient.addColorStop(1, 'transparent');
@@ -361,7 +616,7 @@
                 const dx = p.x - pointer.x;
                 const dy = p.y - pointer.y;
                 const dist = Math.hypot(dx, dy);
-                if (dist < 100) {
+                if (dist < 110) {
                     const angle = Math.atan2(dy, dx);
                     p.x += Math.cos(angle) * 1.2;
                     p.y += Math.sin(angle) * 1.2;
@@ -380,7 +635,7 @@
                     const d = Math.hypot(p.x - p2.x, p.y - p2.y);
                     if (d < 100) {
                         ctx.beginPath();
-                        ctx.lineWidth = (1 - d / 100) * 0.6;
+                        ctx.lineWidth = (1 - d / 100) * 0.5;
                         ctx.moveTo(p.x, p.y);
                         ctx.lineTo(p2.x, p2.y);
                         ctx.stroke();
