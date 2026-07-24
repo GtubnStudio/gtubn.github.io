@@ -26,7 +26,7 @@
             --nav-bg: rgba(255, 255, 255, 0.04);
             --nav-hover-bg: rgba(255, 255, 255, 0.06);
             --nav-active-bg: rgba(255, 255, 255, 0.1);
-            --skeleton-bg: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 37%, rgba(255,255,255,0.03) 63%);
+            --skeleton-bg: rgba(255, 255, 255, 0.03);
         }
 
         @media (prefers-color-scheme: light) {
@@ -51,7 +51,7 @@
                 --nav-bg: rgba(0, 0, 0, 0.04);
                 --nav-hover-bg: rgba(0, 0, 0, 0.05);
                 --nav-active-bg: #ffffff;
-                --skeleton-bg: linear-gradient(90deg, rgba(0,0,0,0.03) 25%, rgba(0,0,0,0.07) 37%, rgba(0,0,0,0.03) 63%);
+                --skeleton-bg: rgba(0, 0, 0, 0.03);
             }
         }
 
@@ -66,160 +66,166 @@
             touch-action: manipulation;
         }
 
-        /* 动态背景 Canvas */
         #bg-canvas {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -1; pointer-events: none;
-            opacity: 0;
+            z-index: -1; pointer-events: none; opacity: 0;
             animation: bgFadeIn 1s ease forwards;
         }
 
         header.site-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 24px;
-            padding: 12px 20px;
-            background: var(--panel);
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 24px; padding: 12px 20px; background: var(--panel);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-            gap: 16px;
-            opacity: 0;
+            border: 1px solid var(--border); border-radius: 18px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); gap: 16px; opacity: 0;
             animation: slideDownIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+        }
+
+        .brand-container {
+            display: flex; flex-direction: column; gap: 2px;
         }
 
         h1 { 
             font-size: 20px; font-weight: 700; cursor: pointer; letter-spacing: -0.3px;
             background: linear-gradient(135deg, var(--accent) 30%, var(--text) 80%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            white-space: nowrap;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); white-space: nowrap;
         }
         @media (hover: hover) { h1:hover { transform: scale(1.02); } }
 
+        .site-subtitle {
+            font-size: 11.5px;
+            color: var(--muted);
+            font-weight: 400;
+            letter-spacing: -0.2px;
+            opacity: 0.85;
+        }
+
         .nav { 
-            display: flex; 
-            gap: 4px; 
-            background: var(--nav-bg);
-            padding: 4px;
-            border-radius: 12px;
-            border: 1px solid var(--card-inner-border);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            display: flex; gap: 4px; background: var(--nav-bg); padding: 4px;
+            border-radius: 12px; border: 1px solid var(--card-inner-border);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            flex-wrap: wrap;
         }
         .nav a { 
-            color: var(--muted); 
-            text-decoration: none; 
-            cursor: pointer; 
-            padding: 7px 16px; 
-            border-radius: 8px; 
-            font-size: 13.5px; 
-            font-weight: 500;
-            line-height: 1.2;
-            transition: color 0.2s ease, background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-            user-select: none;
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center;
-            position: relative;
+            color: var(--muted); text-decoration: none; cursor: pointer; 
+            padding: 7px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 500;
+            line-height: 1.2; transition: color 0.25s ease, background-color 0.25s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none; display: inline-flex; align-items: center; justify-content: center; position: relative;
         }
-        @media (hover: hover) {
-            .nav a:not(.active):hover { 
-                color: var(--text); 
-                background: var(--nav-hover-bg);
-            }
-        }
-        .nav a:active { transform: scale(0.96); }
+        @media (hover: hover) { .nav a:not(.active):hover { color: var(--text); background: var(--nav-hover-bg); } }
+        .nav a:active { transform: scale(0.95); }
         .nav a.active { 
-            color: var(--accent); 
-            font-weight: 600;
-            background: var(--nav-active-bg);
+            color: var(--accent); font-weight: 600; background: var(--nav-active-bg);
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), 0 0 0 1px var(--card-inner-border);
         }
 
         @media (max-width: 640px) {
-            header.site-header { flex-direction: column; align-items: center; padding: 16px; gap: 12px; }
+            header.site-header { flex-direction: column; align-items: center; padding: 16px; gap: 12px; text-align: center; }
+            .brand-container { align-items: center; }
             .nav { width: 100%; justify-content: space-around; }
-            .nav a { flex: 1; text-align: center; padding: 9px 0; }
+            .nav a { flex: 1; text-align: center; padding: 9px 4px; font-size: 12.5px; }
         }
 
-        .page { display: none; opacity: 0; transform: translateY(16px); }
+        .page { 
+            display: none; 
+            opacity: 0; 
+            transform: translateY(12px) scale(0.99); 
+            transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
         .page.active { 
             display: block; 
-            animation: slideUpIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards; 
+            opacity: 1; 
+            transform: translateY(0) scale(1);
         }
 
         .card-box {
-            background: var(--panel);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border); border-radius: 18px;
-            padding: 32px 28px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            background: var(--panel); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border); border-radius: 18px; padding: 24px 28px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12); position: relative; overflow: hidden;
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+                        box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+                        border-color 0.3s ease, 
+                        background-color 0.3s ease;
         }
 
-        .env-cards-container, .about-cards-container { display: flex; flex-direction: column; gap: 16px; }
+        .page.active .card-box:nth-child(1) { animation: slideUpIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards; }
+        .page.active .card-box:nth-child(2) { animation: slideUpIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.12s forwards; }
+        .page.active .card-box:nth-child(3) { animation: slideUpIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.19s forwards; }
 
-        .home-content h2 { font-size: 22px; font-weight: 600; margin-bottom: 12px; color: var(--text); letter-spacing: -0.2px; }
-        .home-content p { font-size: 15px; color: var(--muted); line-height: 1.7; }
+        .home-cards-container, .env-cards-container, .about-cards-container, .rick-cards-container { display: flex; flex-direction: column; gap: 16px; }
+
+        .home-content h2 { font-size: 22px; font-weight: 600; margin-bottom: 8px; color: var(--text); letter-spacing: -0.2px; }
+        .home-content p { font-size: 14.5px; color: var(--muted); line-height: 1.6; }
 
         .notice-box {
-            margin-top: 24px; padding: 16px 20px;
-            background: var(--notice-bg); border: 1px solid var(--notice-border);
-            border-radius: 14px;
+            margin-top: 18px; padding: 14px 18px; background: var(--notice-bg);
+            border: 1px solid var(--notice-border); border-radius: 14px;
+            position: relative; overflow: hidden;
         }
-        .notice-header {
-            display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
-            font-size: 12px; font-weight: 700; color: var(--accent); letter-spacing: 0.5px;
-        }
-        .notice-dot {
-            width: 8px; height: 8px; background-color: #ff4d4f; border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        .notice-body { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
 
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .section-title {
-            font-size: 13px; font-weight: 700; color: var(--accent);
-            letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px;
+        .notice-box::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(88, 166, 255, 0.12), transparent);
+            animation: noticeShimmer 6s infinite ease-in-out;
         }
+
+        .notice-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 12px; font-weight: 700; color: var(--accent); position: relative; z-index: 1; }
+        .notice-dot { width: 8px; height: 8px; background-color: #ff4d4f; border-radius: 50%; animation: pulse 2s infinite; }
+        .notice-body { font-size: 13.5px; color: var(--muted); line-height: 1.6; position: relative; z-index: 1; }
+
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .section-title { font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
+
+        .lab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+        .lab-card {
+            background: var(--card-inner); border: 1px solid var(--card-inner-border);
+            border-radius: 12px; padding: 16px; text-decoration: none; color: inherit;
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer; display: flex; flex-direction: column; gap: 6px;
+            position: relative; overflow: hidden;
+        }
+        
+        .lab-card::after, .social-btn::after {
+            content: ''; position: absolute;
+            top: var(--mouse-y, -100px); left: var(--mouse-x, -100px);
+            width: 140px; height: 140px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 75%);
+            transform: translate(-50%, -50%); pointer-events: none; opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        @media (hover: hover) {
+            .lab-card:hover::after, .social-btn:hover::after { opacity: 1; }
+            .lab-card:hover {
+                border-color: var(--border-glow);
+                background: rgba(255, 255, 255, 0.04);
+                transform: translateY(-4px) scale(1.01);
+                box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18), 0 0 16px var(--accent-glow);
+            }
+        }
+        .lab-card:active { transform: scale(0.98); }
+        .lab-card .lab-title { font-size: 14px; font-weight: 600; color: var(--text); display: flex; justify-content: space-between; align-items: center; z-index: 1; }
+        .lab-card .lab-desc { font-size: 12px; color: var(--muted); line-height: 1.5; z-index: 1; }
 
         .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
-
         .info-card {
             background: var(--card-inner); border: 1px solid var(--card-inner-border);
             border-radius: 12px; padding: 12px 16px; display: flex; flex-direction: column; justify-content: center;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
         }
-        @media (hover: hover) {
-            .info-card:hover {
-                border-color: var(--border-glow); background: rgba(255, 255, 255, 0.04); transform: translateY(-1px);
-            }
-        }
-
+        @media (hover: hover) { .info-card:hover { border-color: var(--border-glow); background: rgba(255, 255, 255, 0.04); transform: translateY(-2px); } }
         .info-card .label { font-size: 11px; color: var(--muted); margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
-        .info-card .value { font-size: 13.5px; font-weight: 600; color: var(--text); word-break: break-all; }
+        .info-card .value { font-size: 13.5px; font-weight: 600; color: var(--text); word-break: break-all; transition: opacity 0.3s ease; }
 
         .badge { font-size: 11px; padding: 2px 6px; border-radius: 4px; background: var(--badge-bg); color: var(--badge-text); font-weight: 600; }
-        .badge.online { background: rgba(46, 160, 67, 0.15); color: #3fb950; }
+        .badge.online { background: rgba(46, 160, 67, 0.15); color: #3fb950; animation: badgePulse 2.5s infinite ease-in-out; }
         .badge.offline { background: rgba(248, 81, 73, 0.15); color: #f85149; }
 
-        .ua-box {
-            padding: 14px; background: var(--card-inner); border: 1px solid var(--card-inner-border);
-            border-radius: 12px; font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-            font-size: 12px; color: var(--muted); line-height: 1.6; word-break: break-all; user-select: all;
-        }
-
-        .action-btn {
-            background: var(--notice-bg); border: 1px solid var(--notice-border);
-            color: var(--accent); padding: 5px 10px; border-radius: 8px;
-            font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
-            display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
-        }
-        .action-btn:hover { background: var(--accent); color: #fff; }
-        .action-btn .btn-icon { display: inline-block; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        .action-btn.refreshing .btn-icon { animation: spin 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
+        .ua-box { padding: 14px; background: var(--card-inner); border: 1px solid var(--card-inner-border); border-radius: 12px; font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace; font-size: 12px; color: var(--muted); line-height: 1.6; word-break: break-all; user-select: all; }
+        .action-btn { background: var(--notice-bg); border: 1px solid var(--notice-border); color: var(--accent); padding: 5px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+        .action-btn:hover { background: var(--accent); color: #fff; transform: translateY(-1px); }
+        .action-btn:active { transform: scale(0.96); }
 
         .about-content { line-height: 1.8; font-size: 14px; }
         .about-content p { margin-bottom: 8px; }
@@ -227,177 +233,87 @@
         .about-content span { color: var(--muted); display: inline-block; width: 140px; }
         
         .social-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
-        .social-btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            height: 40px; padding: 0 16px; border-radius: 10px;
-            background: var(--card-inner); border: 1px solid var(--border);
-            color: var(--text); text-decoration: none; font-size: 13.5px; font-weight: 500;
-            transition: all 0.25s ease; white-space: nowrap;
+        .social-btn { 
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 40px; padding: 0 16px; 
+            border-radius: 10px; background: var(--card-inner); border: 1px solid var(--border); color: var(--text); 
+            text-decoration: none; font-size: 13.5px; font-weight: 500; transition: all 0.25s ease; white-space: nowrap; 
+            position: relative; overflow: hidden;
         }
-        @media (hover: hover) {
-            .social-btn:hover {
-                background: var(--notice-bg); border-color: var(--accent);
-                color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px var(--accent-glow);
-            }
-        }
+        @media (hover: hover) { .social-btn:hover { background: var(--notice-bg); border-color: var(--accent); color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px var(--accent-glow); } }
         .social-btn:active { transform: scale(0.97); }
         .social-btn.disabled { opacity: 0.4; cursor: not-allowed; border-style: dashed; }
         .social-btn.disabled:hover { transform: none; box-shadow: none; background: var(--card-inner); color: var(--text); }
 
         .about-img-box { text-align: center; }
-        .about-img {
-            max-width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--border);
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-        }
-        @media (hover: hover) {
-            .about-img:hover { transform: translateY(-2px); box-shadow: 0 10px 20px var(--accent-glow); }
-        }
+        .about-img { max-width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--border); transition: transform 0.25s ease, box-shadow 0.25s ease; }
+        @media (hover: hover) { .about-img:hover { transform: translateY(-2px); box-shadow: 0 10px 20px var(--accent-glow); } }
 
-        /* 文件列表样式扩展 */
-        .file-notice {
-            margin-bottom: 20px; padding: 16px 18px; background: var(--notice-bg);
-            border: 1px solid var(--notice-border); border-radius: 12px; font-size: 13px;
-            color: var(--muted); line-height: 1.7;
-        }
+        .blurred-bg-content { filter: blur(4px); opacity: 0.35; pointer-events: none; user-select: none; }
+        .file-notice { margin-bottom: 20px; padding: 16px 18px; background: var(--notice-bg); border: 1px solid var(--notice-border); border-radius: 12px; font-size: 13px; color: var(--muted); line-height: 1.7; }
         .file-notice-title { font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
         .file-notice ul { padding-left: 18px; margin-top: 4px; }
         .file-notice li { margin-bottom: 4px; }
         .file-notice li:last-child { margin-bottom: 0; }
 
         .file-controls { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; align-items: center; }
-        .file-search-input {
-            flex: 1; min-width: 180px; background: var(--card-inner); border: 1px solid var(--card-inner-border);
-            border-radius: 8px; padding: 7px 12px; color: var(--text); font-size: 13px; outline: none; transition: border-color 0.2s ease;
-        }
-        .file-search-input:focus { border-color: var(--accent); }
+        .file-search-input { flex: 1; min-width: 180px; background: var(--card-inner); border: 1px solid var(--card-inner-border); border-radius: 8px; padding: 7px 12px; color: var(--text); font-size: 13px; outline: none; }
         .file-filter-group { display: flex; gap: 4px; background: var(--card-inner); padding: 3px; border-radius: 8px; border: 1px solid var(--card-inner-border); }
-        .filter-btn { background: transparent; border: none; color: var(--muted); padding: 4px 10px; font-size: 12px; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
+        .filter-btn { background: transparent; border: none; color: var(--muted); padding: 4px 10px; font-size: 12px; border-radius: 6px; }
         .filter-btn.active { background: var(--notice-bg); color: var(--accent); font-weight: 600; }
-
-        .file-sort-select {
-            background: var(--card-inner); border: 1px solid var(--card-inner-border);
-            color: var(--muted); border-radius: 8px; padding: 6px 10px; font-size: 12px; outline: none; cursor: pointer;
-        }
-        .file-sort-select:focus { border-color: var(--accent); }
-
-        .file-breadcrumbs {
-            display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--muted);
-            margin-bottom: 12px; background: var(--card-inner); padding: 6px 12px;
-            border-radius: 8px; border: 1px solid var(--card-inner-border); min-height: 40px;
-            gap: 10px;
-        }
+        .file-sort-select { background: var(--card-inner); border: 1px solid var(--card-inner-border); color: var(--muted); border-radius: 8px; padding: 6px 10px; font-size: 12px; outline: none; }
+        .file-breadcrumbs { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 12px; background: var(--card-inner); padding: 6px 12px; border-radius: 8px; border: 1px solid var(--card-inner-border); min-height: 40px; gap: 10px; }
         .crumb-path { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; flex: 1; }
-        .crumb-item { cursor: pointer; transition: color 0.2s ease; }
-        .crumb-item:hover { color: var(--accent); text-decoration: underline; }
-        .crumb-sep { opacity: 0.4; }
-
         .file-stats-bar { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; color: var(--muted); margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--card-inner-border); }
-        .file-status-tag { font-size: 11.5px; color: var(--muted); font-weight: 400; margin-left: auto; margin-right: 12px; }
-        
-        /* 列表视图模式 */
+        .file-status-tag { font-size: 11.5px; color: var(--muted); font-weight: 400; margin-left: auto; }
         .file-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-        .file-item {
-            display: flex; align-items: center; justify-content: space-between;
-            background: var(--card-inner); border: 1px solid var(--card-inner-border);
-            padding: 10px 14px; border-radius: 12px; text-decoration: none;
-            color: var(--text); font-size: 13.5px;
-            transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
-            cursor: pointer; opacity: 0; 
-            /* 无论是文件夹还是文件，均统一使用 fileItemIn 出现的进入动画 */
-            animation: fileItemIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            gap: 12px;
+        .skeleton-item { height: 46px; border-radius: 12px; background: var(--skeleton-bg); border: 1px solid var(--card-inner-border); }
+
+        .files-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(11, 14, 20, 0.72); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-radius: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 10; text-align: center; padding: 20px;
         }
-        @media (hover: hover) {
-            .file-item:hover {
-                border-color: var(--border-glow); background: rgba(255, 255, 255, 0.05);
-                transform: translateX(5px); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-            }
-        }
-        .file-item:active { transform: translateX(2px) scale(0.99); }
-        .file-item.is-dir { background: rgba(88, 166, 255, 0.03); border-color: rgba(88, 166, 255, 0.12); }
-        .file-item.is-back { border-style: dashed; background: transparent; }
-        
-        /* 网格视图模式 */
-        .file-list.grid-view {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 12px;
-        }
-        .file-list.grid-view .file-item {
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 14px;
-            gap: 8px;
-        }
-        .file-list.grid-view .file-item:hover { transform: translateY(-3px); }
-        .file-list.grid-view .file-actions {
+        .files-overlay-badge { background: rgba(88, 166, 255, 0.15); color: var(--accent); border: 1px solid rgba(88, 166, 255, 0.3); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 12px; letter-spacing: 0.5px; }
+        .files-overlay-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+        .files-overlay-desc { font-size: 13.5px; color: var(--muted); max-width: 360px; line-height: 1.6; }
+
+        .local-video {
             width: 100%;
-            justify-content: space-between;
-            margin-top: 4px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #000;
+            outline: none;
         }
 
-        .file-info { display: flex; align-items: center; gap: 10px; overflow: hidden; flex: 1; width: 100%; }
-        .file-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
-        .file-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-        
-        .file-btn-sm {
-            background: transparent; border: 1px solid var(--card-inner-border);
-            color: var(--muted); border-radius: 6px; padding: 3px 8px; font-size: 11px;
-            cursor: pointer; transition: all 0.2s ease;
+        .copyright-content {
+            font-size: 13.5px;
+            color: var(--muted);
+            line-height: 1.8;
         }
-        .file-btn-sm:hover { color: var(--accent); border-color: var(--accent); background: var(--notice-bg); }
-        
-        .file-tag {
-            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-            font-size: 11px; font-weight: 700; color: var(--accent); opacity: 0.9;
-            padding: 2px 6px; border-radius: 4px; background: var(--badge-bg); flex-shrink: 0;
-            display: inline-flex; align-items: center; justify-content: center;
-        }
-        .file-tag.dir-tag { background: rgba(255, 170, 0, 0.15); color: #ffb700; }
-        .file-status-msg { color: #f85149; font-size: 14px; text-align: center; padding: 28px 0; line-height: 1.6; }
 
-        .skeleton-item { height: 46px; border-radius: 12px; background: var(--skeleton-bg); background-size: 200% 100%; animation: skeletonLoading 1.5s infinite ease-in-out; }
+        .copyright-content p {
+            margin-bottom: 6px;
+        }
 
-        /* 在线预览模态框样式 */
-        .preview-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            z-index: 999; align-items: center; justify-content: center; padding: 20px;
-            opacity: 0; transition: opacity 0.3s ease;
+        .copyright-content p:last-child {
+            margin-bottom: 0;
         }
-        .preview-modal.active { display: flex; opacity: 1; }
-        .modal-content {
-            background: var(--bg); border: 1px solid var(--border); border-radius: 18px;
-            width: 100%; max-width: 720px; max-height: 85vh; display: flex; flex-direction: column;
-            overflow: hidden; box-shadow: 0 16px 40px rgba(0,0,0,0.5);
-            animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .modal-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 14px 20px; border-bottom: 1px solid var(--card-inner-border);
-            font-size: 14px; font-weight: 600; color: var(--text);
-        }
-        .modal-body { padding: 20px; overflow-y: auto; display: flex; justify-content: center; align-items: center; min-height: 180px; }
-        .modal-body img { max-width: 100%; max-height: 60vh; border-radius: 8px; object-fit: contain; }
-        .modal-body pre {
-            width: 100%; font-family: SFMono-Regular, Consolas, monospace; font-size: 12px;
-            color: var(--text); background: var(--card-inner); padding: 14px; border-radius: 8px;
-            white-space: pre-wrap; word-break: break-all; max-height: 60vh; overflow-y: auto;
-        }
-        .modal-close {
-            background: transparent; border: none; color: var(--muted); font-size: 20px;
-            cursor: pointer; padding: 0 4px; transition: color 0.2s ease;
-        }
-        .modal-close:hover { color: var(--text); }
 
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes fileItemIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes modalSlideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes skeletonLoading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
         @keyframes slideDownIn { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideUpIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes bgFadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.6); } 70% { box-shadow: 0 0 0 8px rgba(255, 77, 79, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 77, 79, 0); } }
+        
+        @keyframes badgePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(63, 185, 80, 0.4); }
+            50% { box-shadow: 0 0 8px 2px rgba(63, 185, 80, 0.25); }
+        }
+
+        @keyframes noticeShimmer {
+            0% { left: -100%; }
+            30%, 100% { left: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -405,28 +321,63 @@
     <canvas id="bg-canvas"></canvas>
 
     <header class="site-header">
-        <h1>Gtubn Studio 的网站</h1>
+        <div class="brand-container">
+            <h1>Gtubn Studio 的网站</h1>
+            <span class="site-subtitle">信息技术网站（原来的＂Gtubn Liang 的网站＂）</span>
+        </div>
         <nav class="nav">
             <a id="nav-home" class="active">主页</a>
             <a id="nav-env">环境检测</a>
             <a id="nav-files">文件</a>
+            <a id="nav-rick">Never Gonna Give You Up</a>
             <a id="nav-about">关于</a>
         </nav>
     </header>
 
     <!-- 1. 主页 -->
     <main id="page-home" class="page active">
-        <div class="card-box home-content">
-            <h2>欢迎来到 Gtubn Studio 的网站！</h2>
-            <p>海内存知己，天涯若比邻。</p>
+        <div class="home-cards-container">
+            <div class="card-box home-content">
+                <h2>欢迎来到 Gtubn Studio 的网站！</h2>
+                <p>海内存知己，天涯若比邻。</p>
 
-            <div class="notice-box">
-                <div class="notice-header">
-                    <span class="notice-dot"></span>
-                    <span>最新公告</span>
+                <div class="notice-box">
+                    <div class="notice-header">
+                        <span class="notice-dot"></span>
+                        <span>站点公告</span>
+                    </div>
+                    <div class="notice-body">
+                        本站用于测试新功能与组件交互，部分模块持续开发调整中。
+                    </div>
                 </div>
-                <div class="notice-body">
-                    欢迎访问！本站点正在测试部署中，部分功能与界面将持续优化。
+            </div>
+
+            <!-- 卡片 2：实验室模块 -->
+            <div class="card-box">
+                <div class="section-header">
+                    <div class="section-title">实验室模块</div>
+                </div>
+                <div class="lab-grid">
+                    <div class="lab-card" onclick="document.getElementById('nav-env').click();">
+                        <div class="lab-title">环境诊断仪 <span class="badge">可用</span></div>
+                        <div class="lab-desc">精准检测当前客户端的硬件、图形渲染与网络能力。</div>
+                    </div>
+                    <div class="lab-card" onclick="document.getElementById('nav-files').click();">
+                        <div class="lab-title">文件资源导览 <span class="badge" style="opacity: 0.6;">测试中</span></div>
+                        <div class="lab-desc">基于 GitHub API 的轻量文件目录与同步展示探索。</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 3：节点状态 -->
+            <div class="card-box">
+                <div class="section-header">
+                    <div class="section-title">节点状态</div>
+                </div>
+                <div class="info-grid">
+                    <div class="info-card"><div class="label">部署节点</div><div class="value">GitHub Pages Global</div></div>
+                    <div class="info-card"><div class="label">网络延迟 (Ping)</div><div class="value" id="ping-time">计算中...</div></div>
+                    <div class="info-card"><div class="label">架构模式</div><div class="value">Vanilla Static (Zero-Dependency)</div></div>
                 </div>
             </div>
         </div>
@@ -437,7 +388,7 @@
         <div class="env-cards-container">
             <div class="card-box">
                 <div class="section-header">
-                    <div class="section-title">基础与环境</div>
+                    <div class="section-title">基础与运行环境</div>
                     <button class="action-btn" id="copy-btn">复制检测诊断</button>
                 </div>
                 <div class="info-grid">
@@ -502,82 +453,105 @@
     <!-- 3. 文件导览页 -->
     <main id="page-files" class="page">
         <div class="card-box">
-            <div class="file-notice">
-                <div class="file-notice-title">文件服务与使用声明</div>
-                本页面列出的所有资源均由 GitHub API 动态实时同步展示：
-                <ul>
-                    <li><b>来源说明：</b>资源文件全部存储并托管于官方 Open Source GitHub 仓库，下载链接直连官方网络。</li>
-                    <li><b>开源协议与版权：</b>各项目及文件版权归原作者所有，请在下载、修改或再分发前严格遵守相关开源许可协议。</li>
-                    <li><b>免责声明：</b>本站仅提供文件目录检索与展示，不对文件内容的完整性、安全性或可用性作任何明示或暗示的保证。任何因下载或使用相关文件而导致的系统损坏或数据丢失，用户需自行承担相应风险。</li>
-                    <li><b>安全建议：</b>对于可执行文件、脚本或配置文件，建议在生产环境使用前进行必要的杀毒与安全审计。</li>
-                </ul>
+            <div class="files-overlay">
+                <div class="files-overlay-badge">LABS / 实验性模块</div>
+                <div class="files-overlay-title">文件服务功能测试中</div>
+                <div class="files-overlay-desc">该文件资源导览模块正在进行功能调优与接口对接，暂未对外开放访问，敬请期待。</div>
             </div>
 
-            <div class="section-header">
-                <div class="section-title">文件资源导览（暂不可用）</div>
-                <span id="file-status-tag" class="file-status-tag">就绪</span>
-                <button class="action-btn" id="refresh-files-btn">
-                    <span class="btn-icon">↻</span>
-                    <span>刷新目录</span>
-                </button>
-            </div>
-
-            <!-- 搜索、排序与视图模式控件 -->
-            <div class="file-controls">
-                <input type="text" id="file-search-input" class="file-search-input" placeholder="搜索当前目录文件名...">
-                
-                <!-- 类型筛选 -->
-                <div class="file-filter-group">
-                    <button class="filter-btn active" data-filter="all">全部</button>
-                    <button class="filter-btn" data-filter="dir">文件夹</button>
-                    <button class="filter-btn" data-filter="file">文件</button>
+            <div class="blurred-bg-content">
+                <div class="file-notice">
+                    <div class="file-notice-title">实验性文件服务声明</div>
+                    本模块设计用于通过 GitHub API 动态同步与检索资源：
+                    <ul>
+                        <li><b>来源说明：</b>资源托管于官方 Open Source GitHub 仓库，下载直连官方节点。</li>
+                        <li><b>开源协议：</b>各项目与文件版权归原作者所有，请遵循对应开源许可使用。</li>
+                        <li><b>免责声明：</b>本测试功能仅作目录检索示范，不保证内容的完整性或持续可用性。</li>
+                        <li><b>安全建议：</b>对任何可执行脚本或程序，建议在测试环境中验证后使用。</li>
+                    </ul>
                 </div>
 
-                <!-- 排序依据 -->
-                <select id="file-sort-select" class="file-sort-select">
-                    <option value="name-asc">按名称 (A-Z)</option>
-                    <option value="name-desc">按名称 (Z-A)</option>
-                    <option value="size-desc">从大到小</option>
-                    <option value="size-asc">从小到大</option>
-                </select>
-
-                <!-- 视图切换 -->
-                <div class="file-filter-group">
-                    <button class="filter-btn active" id="view-list-btn" title="列表视图">☰</button>
-                    <button class="filter-btn" id="view-grid-btn" title="网格视图">::</button>
+                <div class="section-header">
+                    <div class="section-title">文件资源导览（测试版）</div>
+                    <span id="file-status-tag" class="file-status-tag">开发封闭中</span>
                 </div>
-            </div>
 
-            <!-- 面包屑导航 -->
-            <div class="file-breadcrumbs">
-                <div id="crumb-path" class="crumb-path">
-                    <span class="crumb-item" onclick="fetchGitHubFiles('files')">根目录</span>
+                <div class="file-controls">
+                    <input type="text" class="file-search-input" placeholder="搜索当前目录文件名..." disabled>
+                    <div class="file-filter-group">
+                        <button class="filter-btn active" disabled>全部</button>
+                        <button class="filter-btn" disabled>文件夹</button>
+                        <button class="filter-btn" disabled>文件</button>
+                    </div>
+                    <select class="file-sort-select" disabled>
+                        <option>按名称 (A-Z)</option>
+                    </select>
+                    <div class="file-filter-group">
+                        <button class="filter-btn active" disabled title="列表视图">☰</button>
+                        <button class="filter-btn" disabled title="网格视图">::</button>
+                    </div>
                 </div>
-            </div>
 
-            <!-- 文件列表容器 -->
-            <div id="file-list-container" class="file-list">
-                <div class="skeleton-item"></div>
-                <div class="skeleton-item"></div>
-                <div class="skeleton-item"></div>
-            </div>
+                <div class="file-breadcrumbs">
+                    <div class="crumb-path">
+                        <span class="crumb-item">根目录</span>
+                    </div>
+                </div>
 
-            <!-- 统计工具条 -->
-            <div id="file-stats-bar" class="file-stats-bar">
-                <span id="stats-count">文件夹: 0 | 文件: 0</span>
-                <span id="stats-size">总计大小: 0 KB</span>
+                <div class="file-list">
+                    <div class="skeleton-item"></div>
+                    <div class="skeleton-item"></div>
+                    <div class="skeleton-item"></div>
+                </div>
+
+                <div class="file-stats-bar">
+                    <span>文件夹: 0 | 文件: 0</span>
+                    <span>总计大小: 0 KB</span>
+                </div>
             </div>
         </div>
     </main>
 
-    <!-- 4. 关于页 -->
+    <!-- 4. 视频播放页 -->
+    <main id="page-rick" class="page">
+        <div class="rick-cards-container">
+            <div class="card-box">
+                <div class="section-header" style="margin-bottom: 12px;">
+                    <div class="section-title">Rick Astley - Never Gonna Give You Up</div>
+                </div>
+                <video class="local-video" controls preload="metadata">
+                    <source src="123.mp4" type="video/mp4">
+                    您的浏览器暂不支持 HTML5 视频播放。
+                </video>
+            </div>
+
+            <!-- 新增：著名视频版权卡片 -->
+            <div class="card-box">
+                <div class="section-header" style="margin-bottom: 12px;">
+                    <div class="section-title">著名视频版权</div>
+                </div>
+                <div class="copyright-content">
+                    <p><strong>作品名称：</strong>Never Gonna Give You Up</p>
+                    <p><strong>演唱 / 表演：</strong>Rick Astley</p>
+                    <p><strong>词曲作者：</strong>Mike Stock, Matt Aitken, Pete Waterman (Stock Aitken Waterman)</p>
+                    <p><strong>出品 / 唱片公司：</strong>RCA Records / Sony Music Entertainment</p>
+                    <p><strong>发行年份：</strong>1987年</p>
+                    <p style="margin-top: 10px; font-size: 12.5px; opacity: 0.8;">
+                        * 本页面嵌入之视频音视频资源版权归原作者及版权方所有，仅作网站功能示范与测试使用。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 5. 关于页 -->
     <main id="page-about" class="page">
         <div class="about-cards-container">
             <div class="card-box about-content">
                 <div class="section-header" style="margin-bottom: 16px;">
                     <div class="section-title">关于网站与工作室</div>
                 </div>
-                <p style="color: var(--muted);">这是 Gtubn Studio 的网站。</p>
+                <p style="color: var(--muted);">这是 Gtubn Studio 的实验性网站。</p>
                 <p style="color: var(--muted);">&copy; 2026 Gtubn Studio, All Rights Reserved.</p>
                 <p><span>Web 呈现</span>GitHub Pages</p>
                 <p><span>Web 源代码辅助</span>Google Gemini</p>
@@ -603,39 +577,13 @@
         </div>
     </main>
 
-    <!-- 预览模态框 -->
-    <div id="preview-modal" class="preview-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span id="modal-title">文件预览</span>
-                <button class="modal-close" onclick="closePreviewModal()">&times;</button>
-            </div>
-            <div id="modal-body" class="modal-body">
-                <!-- 动态内容渲染处 -->
-            </div>
-        </div>
-    </div>
-
     <script>
-        // ----------------- GitHub 文件列表配置 -----------------
-        const GITHUB_CONFIG = {
-            username: '',
-            repo: '',
-            path: 'files'
-        };
-
-        let currentPath = GITHUB_CONFIG.path;
-        let isFetchingFiles = false;
-        let cachedFileData = [];
-        let currentFilter = 'all';
-        let currentSort = 'name-asc';
-        let currentView = 'list';
-
         // ----------------- 路由切换 -----------------
         const navItems = [
             { btn: document.getElementById('nav-home'), page: document.getElementById('page-home') },
             { btn: document.getElementById('nav-env'), page: document.getElementById('page-env') },
             { btn: document.getElementById('nav-files'), page: document.getElementById('page-files') },
+            { btn: document.getElementById('nav-rick'), page: document.getElementById('page-rick') },
             { btn: document.getElementById('nav-about'), page: document.getElementById('page-about') }
         ];
 
@@ -647,308 +595,57 @@
                 });
                 item.btn.classList.add('active');
                 item.page.classList.add('active');
-
-                if (item.btn.id === 'nav-files') {
-                    fetchGitHubFiles(currentPath);
-                }
             });
         });
 
-        // ----------------- 格式与图标工具函数 -----------------
-        function getFileTag(item) {
-            if (item.type === 'dir') return { text: 'DIR', class: 'dir-tag' };
-            
-            const ext = item.name.split('.').pop().toLowerCase();
-            if (['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'ico'].includes(ext)) return { text: 'IMG', class: '' };
-            if (['cpp', 'c', 'h', 'hpp', 'py', 'java', 'js', 'json', 'html', 'css'].includes(ext)) return { text: 'CODE', class: '' };
-            if (['zip', '7z', 'rar', 'gz', 'tar'].includes(ext)) return { text: 'ZIP', class: '' };
-            if (['exe', 'msi', 'apk'].includes(ext)) return { text: 'BIN', class: '' };
-            if (['txt', 'md', 'log'].includes(ext)) return { text: 'TXT', class: '' };
-            
-            return { text: 'FILE', class: '' };
-        }
-
-        function isPreviewable(fileName) {
-            const ext = fileName.split('.').pop().toLowerCase();
-            return ['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'txt', 'md', 'json', 'js', 'cpp', 'c', 'py', 'java', 'html', 'css'].includes(ext);
-        }
-
-        // ----------------- 文件展示 -----------------
-        function renderBreadcrumbs(path) {
-            const container = document.getElementById('crumb-path');
-            const parts = path.split('/');
-            let accPath = '';
-            
-            let html = '';
-            parts.forEach((part, idx) => {
-                accPath += (idx === 0 ? part : '/' + part);
-                const isLast = idx === parts.length - 1;
-                const displayName = (idx === 0 && part === 'files') ? '根目录' : part;
-
-                if (isLast) {
-                    html += `<span class="crumb-item" style="color:var(--accent);font-weight:600;">${displayName}</span>`;
-                } else {
-                    html += `<span class="crumb-item" onclick="fetchGitHubFiles('${accPath}')">${displayName}</span><span class="crumb-sep">/</span>`;
-                }
+        // ----------------- 鼠标光晕跟随逻辑 -----------------
+        document.querySelectorAll('.lab-card, .social-btn').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
             });
-            container.innerHTML = html;
-        }
+        });
 
-        function updateStats(items) {
-            let dirCount = 0;
-            let fileCount = 0;
-            let totalSize = 0;
-
-            items.forEach(item => {
-                if (item.type === 'dir') dirCount++;
-                else {
-                    fileCount++;
-                    totalSize += (item.size || 0);
-                }
-            });
-
-            document.getElementById('stats-count').innerText = `文件夹: ${dirCount} | 文件: ${fileCount}`;
-            document.getElementById('stats-size').innerText = `总计大小: ${(totalSize / 1024).toFixed(1)} KB`;
-        }
-
-        function renderFileList() {
-            const container = document.getElementById('file-list-container');
-            const keyword = document.getElementById('file-search-input').value.trim().toLowerCase();
-
-            // 过滤
-            let items = cachedFileData.filter(item => {
-                if (currentFilter === 'dir' && item.type !== 'dir') return false;
-                if (currentFilter === 'file' && item.type !== 'file') return false;
-                if (keyword && !item.name.toLowerCase().includes(keyword)) return false;
-                return true;
-            });
-
-            // 排序逻辑 (保证文件夹始终在前)
-            items.sort((a, b) => {
-                if (a.type !== b.type) return a.type === 'dir' ? -1 : 1;
-                
-                if (currentSort === 'name-asc') return a.name.localeCompare(b.name);
-                if (currentSort === 'name-desc') return b.name.localeCompare(a.name);
-                if (currentSort === 'size-desc') return (b.size || 0) - (a.size || 0);
-                if (currentSort === 'size-asc') return (a.size || 0) - (b.size || 0);
-                return 0;
-            });
-
-            container.innerHTML = '';
-            updateStats(items);
-
-            let renderIndex = 0;
-
-            if (currentPath !== GITHUB_CONFIG.path && currentPath.includes('/')) {
-                const backItem = document.createElement('div');
-                backItem.className = 'file-item is-back';
-                backItem.style.animationDelay = '0ms';
-                backItem.innerHTML = `<div class="file-info"><span class="file-tag dir-tag">DIR</span><b class="file-name">.. (返回上一级)</b></div>`;
-                backItem.onclick = () => {
-                    const parentPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
-                    fetchGitHubFiles(parentPath);
-                };
-                container.appendChild(backItem);
-                renderIndex++;
+        // ----------------- 数字跳动/渐显动画辅助 -----------------
+        function animateValue(element, targetNum, suffix = " ms", duration = 600) {
+            let start = 0;
+            const startTime = performance.now();
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                const currentNum = Math.floor(easeProgress * targetNum);
+                element.innerText = `${currentNum}${suffix}`;
+                if (progress < 1) requestAnimationFrame(update);
             }
-
-            if (items.length === 0) {
-                container.innerHTML += `<div class="file-status-msg" style="color:var(--muted);padding:16px 0;">未找到匹配的文件或文件夹</div>`;
-                return;
-            }
-
-            items.forEach((item) => {
-                const fileEl = document.createElement('div');
-                fileEl.className = `file-item ${item.type === 'dir' ? 'is-dir' : ''}`;
-                
-                // 统一文件夹与文件的交错动画延迟（Stagger Effect）
-                fileEl.style.animationDelay = `${(renderIndex + 1) * 35}ms`;
-                renderIndex++;
-
-                const tagInfo = getFileTag(item);
-
-                if (item.type === 'dir') {
-                    fileEl.innerHTML = `
-                        <div class="file-info">
-                            <span class="file-tag ${tagInfo.class}">${tagInfo.text}</span>
-                            <span class="file-name" title="${item.name}">${item.name}</span>
-                        </div>
-                        <span class="badge">文件夹</span>
-                    `;
-                    fileEl.onclick = () => fetchGitHubFiles(item.path);
-                } else {
-                    const canPreview = isPreviewable(item.name);
-                    fileEl.innerHTML = `
-                        <div class="file-info">
-                            <span class="file-tag ${tagInfo.class}">${tagInfo.text}</span>
-                            <span class="file-name" title="${item.name}">${item.name}</span>
-                        </div>
-                        <div class="file-actions">
-                            ${canPreview ? `<button class="file-btn-sm" title="在线预览" onclick="openPreviewModal(event, '${item.name}', '${item.download_url}')">预览</button>` : ''}
-                            <button class="file-btn-sm" title="复制直连链接" onclick="copyLink(event, '${item.download_url}')">复制</button>
-                            <span class="badge">${(item.size/1024).toFixed(1)} KB</span>
-                        </div>
-                    `;
-                    fileEl.onclick = (e) => {
-                        if (!e.target.classList.contains('file-btn-sm')) {
-                            window.open(item.download_url, '_blank');
-                        }
-                    };
-                }
-                container.appendChild(fileEl);
-            });
+            requestAnimationFrame(update);
         }
 
-        // ----------------- 预览功能 -----------------
-        function openPreviewModal(e, name, url) {
-            e.preventDefault();
-            e.stopPropagation();
-            const modal = document.getElementById('preview-modal');
-            const title = document.getElementById('modal-title');
-            const body = document.getElementById('modal-body');
-
-            title.innerText = `预览: ${name}`;
-            body.innerHTML = `<span style="color:var(--muted);">正在加载预览...</span>`;
-            modal.classList.add('active');
-
-            const ext = name.split('.').pop().toLowerCase();
-            if (['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp'].includes(ext)) {
-                body.innerHTML = `<img src="${url}" alt="Preview" />`;
-            } else {
-                fetch(url)
-                    .then(res => res.text())
-                    .then(text => {
-                        body.innerHTML = `<pre><code>${escapeHtml(text.slice(0, 10000))}${text.length > 10000 ? '\n\n... (仅展示前 10KB 内容)' : ''}</code></pre>`;
-                    })
-                    .catch(() => {
-                        body.innerHTML = `<span style="color:#f85149;">加载文件内容失败。</span>`;
-                    });
-            }
-        }
-
-        function closePreviewModal() {
-            document.getElementById('preview-modal').classList.remove('active');
-        }
-
-        function escapeHtml(str) {
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-
-        function copyLink(e, url) {
-            e.preventDefault();
-            e.stopPropagation();
-            const btn = e.currentTarget;
-            navigator.clipboard.writeText(url).then(() => {
-                const oldText = btn.innerText;
-                btn.innerText = "已复制";
-                btn.style.borderColor = "var(--accent)";
-                setTimeout(() => {
-                    btn.innerText = oldText;
-                    btn.style.borderColor = "";
-                }, 1500);
-            }).catch(() => { alert("复制链接失败"); });
-        }
-
-        // ----------------- Fetch GitHub API -----------------
-        function fetchGitHubFiles(path = GITHUB_CONFIG.path) {
-            currentPath = path;
-            const container = document.getElementById('file-list-container');
-            const statusTag = document.getElementById('file-status-tag');
-            const refreshBtn = document.getElementById('refresh-files-btn');
-
-            if (isFetchingFiles) return;
-            isFetchingFiles = true;
-
-            renderBreadcrumbs(path);
-
-            refreshBtn.classList.add('refreshing');
-            if (statusTag) statusTag.innerText = "同步中...";
-
-            container.innerHTML = `
-                <div class="skeleton-item"></div>
-                <div class="skeleton-item"></div>
-                <div class="skeleton-item"></div>
-            `;
-
-            const url = `https://api.github.com/repos/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/contents/${path}`;
-
-            fetch(url)
-                .then(res => {
-                    if (!res.ok) throw new Error('API请求失败');
-                    return res.json();
+        // ----------------- Ping 测试 -----------------
+        function measurePing() {
+            const start = performance.now();
+            fetch(location.href, { method: 'HEAD', cache: 'no-cache' })
+                .then(() => {
+                    const duration = Math.round(performance.now() - start);
+                    animateValue(document.getElementById('ping-time'), duration, " ms");
                 })
-                .then(data => {
-                    if (!Array.isArray(data)) {
-                        cachedFileData = [];
-                        container.innerHTML = `<div class="file-status-msg">未找到相关文件</div>`;
-                        return;
-                    }
-
-                    cachedFileData = data;
-                    renderFileList();
-
-                    const now = new Date();
-                    const timeStr = now.toTimeString().split(' ')[0];
-                    if (statusTag) statusTag.innerText = `更新于 ${timeStr}`;
-                })
-                .catch(err => {
-                    cachedFileData = [];
-                    container.innerHTML = `<div class="file-status-msg">读取文件目录失败</div>`;
-                    if (statusTag) statusTag.innerText = "同步失败";
-                })
-                .finally(() => {
-                    isFetchingFiles = false;
-                    setTimeout(() => { refreshBtn.classList.remove('refreshing'); }, 500);
-                });
+                .catch(() => { document.getElementById('ping-time').innerText = "测量受限"; });
         }
-
-        // 事件监听：搜索、排序、视图
-        document.getElementById('file-search-input').addEventListener('input', renderFileList);
-
-        document.querySelectorAll('.file-filter-group .filter-btn[data-filter]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.file-filter-group .filter-btn[data-filter]').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentFilter = btn.dataset.filter;
-                renderFileList();
-            });
-        });
-
-        document.getElementById('file-sort-select').addEventListener('change', (e) => {
-            currentSort = e.target.value;
-            renderFileList();
-        });
-
-        const viewListBtn = document.getElementById('view-list-btn');
-        const viewGridBtn = document.getElementById('view-grid-btn');
-        const listContainer = document.getElementById('file-list-container');
-
-        viewListBtn.addEventListener('click', () => {
-            viewListBtn.classList.add('active');
-            viewGridBtn.classList.remove('active');
-            listContainer.classList.remove('grid-view');
-        });
-
-        viewGridBtn.addEventListener('click', () => {
-            viewGridBtn.classList.add('active');
-            viewListBtn.classList.remove('active');
-            listContainer.classList.add('grid-view');
-        });
-
-        document.getElementById('refresh-files-btn').addEventListener('click', () => {
-            fetchGitHubFiles(currentPath);
-        });
+        measurePing();
 
         // ----------------- 环境检测逻辑 -----------------
         function detectGPU() {
             try {
-                  const canvas = document.createElement('canvas');
-                  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-                  if (!gl) return "不支持";
-                  const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                  if (!debugInfo) return "不支持";
-                  const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_GL);
-                  return renderer ? renderer : "不支持";
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (!gl) return "不支持";
+                const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                if (!debugInfo) return "不支持";
+                const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_GL);
+                return renderer ? renderer : "不支持";
             } catch (e) { return "不支持"; }
         }
 
@@ -1032,7 +729,8 @@
                     const navEntries = performance.getEntriesByType('navigation');
                     if (navEntries.length > 0) {
                         const pageLoadTime = Math.round(navEntries[0].duration);
-                        document.getElementById('env-performance').innerText = `${pageLoadTime} ms`;
+                        const perfEl = document.getElementById('env-performance');
+                        animateValue(perfEl, pageLoadTime, " ms");
                     }
                 }, 0);
             });
